@@ -1,0 +1,54 @@
+.body {
+    padding: 0;
+    margin: 0;
+}
+
+p {
+    padding: 0;
+    margin: 0;
+}
+
+.black {
+    color: black;
+}
+
+#balance {
+    color: black;
+}
+
+.hint {
+    color: #666;
+}
+
+.left, .right {
+    width: 50%;
+    display: inline-block;
+    vertical-align: top;
+}
+
+.right {
+    width: 49%;
+}
+
+.crowdsale-info, .token-info {
+    display: inline-block;
+    vertical-align: top;
+    border: 1px solid black;
+    margin: 5px;
+    padding: 5px;
+    width: 45%;
+}
+
+.crowdsale-purchases {
+    width: 100%;
+    margin-top: 10px;
+    border: 1px solid red;
+}
+
+.crowdsale table td span {
+    font-weight: bold;
+}
+
+.crowdsale table td.bonuses {
+    padding-top: 10px;
+}

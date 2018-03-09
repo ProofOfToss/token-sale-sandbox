@@ -1,0 +1,3 @@
+[submodule "contracts/TokenSale"]
+    path = contracts/TokenSale
+    url = git@github.com-axioma:ProofOfToss/token-sale-contracts.git

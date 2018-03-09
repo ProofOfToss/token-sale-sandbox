@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Toss Token & Crowdsale sandbox</title>
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="./app.js"></script>
+</head>
+<body>
+<div class="crowdsale-actions">
+    <h2>Crowdsale actions</h2>
+    <div>
+        <h4>Setup</h4>
+        <div>
+            <div>Start time: <input type="text" class="js-cs-actions-setup-start-time" data-c-name="startTime"/>
+            </div>
+            <div>
+                End discount time:
+                <input type="text" class="js-cs-actions-setup-end-discount-time" data-c-name="endDiscountTime"/>
+            </div>
+            <div>End time: <input type="text" class="js-cs-actions-setup-end-time" data-c-name="endTime"/></div>
+            <div>Soft cap: <input type="text" class="js-cs-actions-setup-soft-cap" data-c-name="softCap"/></div>
+            <div>Hard cap: <input type="text" class="js-cs-actions-setup-hard-cap" data-c-name="hardCap"/></div>
+            <div>Rate: <input type="text" class="js-cs-actions-setup-rate" data-c-name="rate"/></div>
+            <div>Over limit: <input type="text" class="js-cs-actions-setup-over-limit" data-c-name="overLimit"/></div>
+            <div>Min pay: <input type="text" class="js-cs-actions-setup-min-pay" data-c-name="minPay"/></div>
+            <div>
+                Bonus 1 value:
+                <input type="text" class="js-cs-actions-setup-value" data-bonus="0" data-c-name="bonusesValue"/>
+            </div>
+            <div>
+                Bonus 1 procent:
+                <input type="text" class="js-cs-actions-setup-procent" data-bonus="0" data-c-name="bonusesProcent"/>
+            </div>
+            <div>
+                Bonus 1 freeze time:
+                <input type="text" class="js-cs-actions-setup-freeze-time" data-bonus="0" data-c-name="bonusesFreezeTime"/>
+            </div>
+            <div>
+                Bonus 2 value:
+                <input type="text" class="js-cs-actions-setup-value" data-bonus="1" data-c-name="bonusesValue"/>
+            </div>
+            <div>
+                Bonus 2 procent:
+                <input type="text" class="js-cs-actions-setup-procent" data-bonus="1" data-c-name="bonusesProcent"/>
+            </div>
+            <div>
+                Bonus 2 freeze time:
+                <input type="text" class="js-cs-actions-setup-freeze-time" data-bonus="1" data-c-name="bonusesFreezeTime"/>
+            </div>
+            <button class="js-cs-actions-setup">Setup</button>
+        </div>
+
+        <h4>Change period</h4>
+        <div>
+            <div>
+                Start time: <input type="text" class="js-cs-actions-change-period-start-time" data-c-name="startTime"/>
+            </div>
+            <div>
+                End discount time:
+                <input type="text" class="js-cs-actions-change-period-end-discount-time" data-c-name="endDiscountTime"/>
+            </div>
+            <div>
+                End time: <input type="text" class="js-cs-actions-change-period-end-time" data-c-name="endTime"/>
+            </div>
+            <button class="js-cs-actions-change-period">Change period</button>
+        </div>
+
+        <h4>Change targets</h4>
+        <div>
+            <div>Soft cap: <input type="text" class="js-cs-actions-change-targets-soft-cap" data-c-name="softCap"/>
+            </div>
+            <div>Hard cap: <input type="text" class="js-cs-actions-change-targets-hard-cap" data-c-name="hardCap"/>
+            </div>
+            <button class="js-cs-actions-change-targets">Change targets</button>
+        </div>
+
+        <h4>Change rate</h4>
+        <div>
+            <div>Rate: <input type="text" class="js-cs-actions-change-rate-rate" data-c-name="rate"/></div>
+            <div>
+                Over limit:
+                <input type="text" class="js-cs-actions-change-rate-over-limit" data-c-name="overLimit"/>
+            </div>
+            <div>Min pay: <input type="text" class="js-cs-actions-change-rate-min-pay" data-c-name="minPay"/></div>
+            <button class="js-cs-actions-change-rate">Change rate</button>
+        </div>
+
+        <h4>Set bonuses</h4>
+        <div>
+            <div>
+                Bonus 1 value:
+                <input type="text" class="js-cs-actions-set-bonuses-value" data-bonus="0" data-c-name="bonusesValue"/>
+            </div>
+            <div>
+                Bonus 1 procent:
+                <input type="text" class="js-cs-actions-set-bonuses-procent" data-bonus="0" data-c-name="bonusesProcent"/>
+            </div>
+            <div>
+                Bonus 1 freeze time:
+                <input type="text" class="js-cs-actions-set-bonuses-freeze-time" data-bonus="0" data-c-name="bonusesFreezeTime"/>
+            </div>
+            <div>
+                Bonus 2 value:
+                <input type="text" class="js-cs-actions-set-bonuses-value" data-bonus="1" data-c-name="bonusesValue"/>
+            </div>
+            <div>
+                Bonus 2 procent:
+                <input type="text" class="js-cs-actions-set-bonuses-procent" data-bonus="1" data-c-name="bonusesProcent"/>
+            </div>
+            <div>
+                Bonus 2 freeze time:
+                <input type="text" class="js-cs-actions-set-bonuses-freeze-time" data-bonus="1" data-c-name="bonusesFreezeTime"/>
+            </div>
+            <button class="js-cs-actions-set-bonuses">Set bonuses</button>
+        </div>
+
+        <h4>Get profit percent for date</h4>
+        <div>
+            <div>Date: <input type="text" class="js-cs-actions-get-profit-percent-for-date-date"/></div>
+            <button class="js-cs-actions-get-profit-percent-for-date">Get profit percent for date</button>
+            <br>
+            Check result in console
+        </div>
+
+        <h4>Token Sale Finalization</h4>
+        <div>
+            <button class="js-cs-actions-finalize-all">Finalize all</button>
+            <button class="js-cs-actions-finalize">Finalize</button>
+            <button class="js-cs-actions-finalize-1">Finalize 1</button>
+            <button class="js-cs-actions-finalize-2">Finalize 2</button>
+            <button class="js-cs-actions-finalize-3">Finalize 3</button>
+            <button class="js-cs-actions-distruct-vault">Distruct vault</button>
+        </div>
+
+        <h4>Token Sale Initialization</h4>
+        <div>
+            <button class="js-cs-actions-initialize">Initialize</button>
+        </div>
+
+        <h4>Claim refund</h4>
+        <div>
+            <button class="js-cs-actions-claim-refund">Claim refund</button>
+        </div>
+
+        <h4>Fast token sale</h4>
+        <div>
+            <div>Sum: <input type="text" class="js-cs-actions-fast-token-sale-sum"/></div>
+            <button class="js-cs-actions-fast-token-sale">Fast token sale</button>
+        </div>
+
+        <h4>Get cash for my address</h4>
+        <div>
+            <button class="js-cs-actions-get-cash">Get cash for my address</button>
+        </div>
+
+        <h4>Get cash for custom address</h4>
+        <div>
+            <div>Address: <input type="text" class="js-cs-actions-get-cash-custom-address"/></div>
+            <button class="js-cs-actions-get-cash-custom">Get cash for custom address</button>
+        </div>
+
+        <h4>Pause actions</h4>
+        <div>
+            <button class="js-cs-actions-token-pause">Token pause</button>
+            <button class="js-cs-actions-token-unpause">Token unpause</button>
+            <button class="js-cs-actions-crowdsale-pause">Crowdsale pause</button>
+            <button class="js-cs-actions-crowdsale-unpause">Crowdsale unpause</button>
+        </div>
+
+        <h4>Change wallet</h4>
+        <div>
+            <div>Role: <input type="text" class="js-cs-actions-change-wallet-role"/></div>
+            <div>Address: <input type="text" class="js-cs-actions-change-wallet-address"/></div>
+            <button class="js-cs-actions-change-wallet">Change wallet</button>
+        </div>
+
+        <h4>Payments in other currency</h4>
+        <div>
+            <div>pToken amount: <input type="text" class="js-cs-actions-payments-in-other-currency-pToken-amount"/>
+            </div>
+            <div>Non-ETH sum: <input type="text" class="js-cs-actions-payments-in-other-currency-non-eth-sum"/>
+            </div>
+            <button class="js-cs-actions-payments-in-other-currency">Add payment</button>
+        </div>
+
+        <h4>Buy tokens</h4>
+        <div>
+            <div>Benificiary: <input type="text" class="js-cs-actions-buy-tokens-benificiary"/></div>
+            <button class="js-cs-actions-buy-tokens">Buy tokens</button>
+        </div>
+    </div>
+</div>
+</body>
+</html>

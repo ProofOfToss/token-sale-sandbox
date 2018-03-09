@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Toss Token & Crowdsale sandbox</title>
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="./app.js"></script>
+</head>
+<body>
+<div class="crowdsale-info">
+    <h2>Crowdsale info</h2>
+    <table>
+        <tr>
+            <td>
+                <p>Is finalized: <span class="js-cs-is-finalized">0</span></p>
+                <p>Is initialized: <span class="js-cs-is-initialized">0</span></p>
+                <p>Is paused crowdsale: <span class="js-cs-is-paused-crowdsale">0</span></p>
+                <p>Overall pTokens: <span class="js-cs-overall">0</span></p>
+                <p>Start mint? <span class="js-cs-start-mint">0</span></p>
+                <p>Start time: <span class="js-cs-start-time">0</span></p>
+                <p>End discount time: <span class="js-cs-end-discount-time">0</span></p>
+                <p>End time: <span class="js-cs-end-time">0</span></p>
+                <p>Rate: <span class="js-cs-rate">0</span></p>
+                <p>Soft cap: <span class="js-cs-soft-cap">0</span></p>
+                <p>Hard cap: <span class="js-cs-hard-cap">0</span></p>
+                <p>Over limit: <span class="js-cs-over-limit">0</span></p>
+            </td>
+            <td>
+                <p>Min pay: <span class="js-cs-min-pay">0</span></p>
+                <p>Wei raised: <span class="js-cs-wei-raised">0</span></p>
+                <p>Wei total raised: <span class="js-cs-wei-total-raised">0</span></p>
+                <p>Token reserved: <span class="js-cs-token-reserved">0</span></p>
+                <p>Bounty tokens ready to mint? <span class="js-cs-bounty">0</span></p>
+                <p>Team tokens ready to mint? <span class="js-cs-team">0</span></p>
+                <p>Company tokens ready to mint? <span class="js-cs-company">0</span></p>
+                <p>Token sale type: <span class="js-cs-token-sale-type"></span></p>
+                <p>Has ended? <span class="js-cs-has-ended">0</span></p>
+                <p>Goal reached? <span class="js-cs-goal-reached">0</span></p>
+                <p>Get profit percent: <span class="js-cs-get-profit-percent">0</span></p>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2" class="bonuses">
+                Bonuses:
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Sum</th>
+                        <th>Percent</th>
+                        <th>Freeze time</th>
+                    </tr>
+                    </thead>
+                    <tbody class="js-cs-bonuses"></tbody>
+                </table>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<div class="token-info">
+    <h2>Toss Token info</h2>
+    <h3>You have <span class="black"><span id="balance"></span> TOSS</span></h3>
+    <br>
+    <h1>Send Toss</h1>
+    <br><label>Amount:</label>
+    <input type="text" class="js-send-toss-amount" placeholder="e.g., 95"/>
+    <br><label>To Address:</label>
+    <input type="text" class="js-send-toss-address" placeholder="e.g., 0x93e66d9baea28c17d9fc393b53e3fbdd76899dae"/>
+    <br><br>
+    <button id="send" class="js-send-toss">Send Toss</button>
+    <br><br>
+    <span id="status"></span>
+    <br>
+    <span class="hint"><strong>Hint:</strong> open the browser developer console to view any errors and warnings.</span>
+</div>
+
+<div class="crowdsale-purchases">
+    <h2>Token purchases</h2>
+    <div class="js-purchases"></div>
+</div>
+</body>
+</html>
