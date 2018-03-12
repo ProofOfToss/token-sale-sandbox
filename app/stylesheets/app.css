@@ -52,3 +52,8 @@ p {
 .crowdsale table td.bonuses {
     padding-top: 10px;
 }
+
+.crowdsale-purchases table th,
+.crowdsale-purchases table td {
+    padding: 0 10px 0 10px;
+}

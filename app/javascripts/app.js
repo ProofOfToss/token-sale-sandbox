@@ -19,6 +19,7 @@ var TossToken = contract(toss_token_artifacts);
 var accounts;
 var account;
 var crowdsaleInfoFetched = false;
+var customWeb3;
 
 window.App = {
   start: function() {
@@ -45,8 +46,34 @@ window.App = {
 
       self.refreshBalance();
       self.listenToActions();
+      self.listenToPurchaseEvents();
 
       setInterval(() => self.showCrowdsaleInfo(), 1000);
+    });
+  },
+
+
+  listenToPurchaseEvents: async function () {
+    // create a new web3 objects, because the one which comes from MetaMask has problems with events litening
+    customWeb3 = new Web3(web3.currentProvider);
+
+    var TossCrowdsale2 = contract(toss_crowdsale_artifacts);
+    TossCrowdsale2.setProvider(customWeb3.currentProvider);
+
+    var crowdsale = await TossCrowdsale.deployed();
+    var tokenPurchaseEvent = crowdsale.TokenPurchase({}, {fromBlock: 0, toBlock: 'latest'});
+    var $purchaseContainer = $('.js-crowdsale-purchases');
+
+    tokenPurchaseEvent.watch(function(error, result) {
+      let e = result.args;
+      let html = '<tr>';
+      html += '<td>' + e.purchaser + '</td>';
+      html += '<td>' + e.beneficiary + '</td>';
+      html += '<td>' + e.value.toNumber() / 10**18  + '</td>';
+      html += '<td>' + e.amount.toNumber() / 10**18 + '</td>';
+      html += '</tr>';
+
+      $purchaseContainer.append($(html));
     });
   },
 
@@ -75,6 +102,8 @@ window.App = {
         bonuses.freezeTime[parseInt($(this).data('bonus'), 10)] = parseInt($(this).val(), 10);
       }
     });
+
+    return bonuses;
   },
 
 
@@ -91,7 +120,7 @@ window.App = {
       crowdsale.changePeriod(startTime, endDiscountTime, endTime, from);
     });
 
-    $('.js-cs-actions-setup').click(function () {
+    $('.js-cs-actions-setup').click(() => {
       var bonuses = this.collectBonusData('js-cs-actions-setup');
       var startTime = parseInt($('.js-cs-actions-setup-start-time').val(), 10);
       var endDiscountTime = parseInt($('.js-cs-actions-setup-end-discount-time').val(), 10);
@@ -130,7 +159,7 @@ window.App = {
       crowdsale.changeRate(rate, overLimit, minPay, from);
     });
 
-    $('.js-cs-actions-set-bonuses').click(function () {
+    $('.js-cs-actions-set-bonuses').click(() => {
       var bonuses = this.collectBonusData('js-cs-actions-set-bonuses');
 
       console.log(bonuses.value, bonuses.procent, bonuses.freezeTime, from);
@@ -185,14 +214,14 @@ window.App = {
       var address = $('.js-cs-actions-get-cash-custom-address').val();
 
       console.log(address);
-      crowdsale.getCashFrom(address);
+      crowdsale.getCashFrom(address, from);
     });
 
     $('.js-cs-actions-fast-token-sale').click(function () {
       var sum = parseInt($('.js-cs-actions-fast-token-sale-sum').val(), 10);
 
       console.log(sum);
-      crowdsale.fastTokenSale(sum);
+      crowdsale.fastTokenSale(sum, from);
     });
 
     $('.js-cs-actions-token-pause').click(function () {
@@ -229,9 +258,10 @@ window.App = {
 
     $('.js-cs-actions-buy-tokens').click(function () {
       var benificiary = $('.js-cs-actions-buy-tokens-benificiary').val();
+      var value = web3.toWei(parseInt($('.js-cs-actions-buy-tokens-value').val(), 10));
 
-      console.log(benificiary);
-      crowdsale.buyTokens(benificiary);
+      console.log(benificiary, {from: account, value: value});
+      crowdsale.buyTokens(benificiary, {from: account, value: value});
     });
 
     // Send TOSS
@@ -346,7 +376,7 @@ window.App = {
     $('.js-cs-soft-cap').html(data.softCap.toNumber() / 10**18);
     $('.js-cs-hard-cap').html(data.hardCap.toNumber() / 10**18);
     $('.js-cs-over-limit').html(data.overLimit.toNumber() / 10**18);
-    $('.js-cs-min-pay').html(data.minPay.toNumber() / 10**18);
+    $('.js-cs-min-pay').html(data.minPay.toNumber() / 10**3);
     $('.js-cs-wei-raised').html(data.weiRaised.toNumber() / 10**18);
     $('.js-cs-wei-total-raised').html(data.weiTotalRaised.toNumber() / 10**18);
     $('.js-cs-token-reserved').html(data.tokenReserved.toNumber());
@@ -375,9 +405,11 @@ window.App = {
   refreshBalance: async function() {
     var toss = await TossToken.deployed();
     var balance = await toss.balanceOf.call(account, {from: account});
-    var balance_element = document.getElementById("balance");
+    var $balanceElement = $('#balance');
 
-    balance_element.innerHTML = balance.valueOf();
+    if ($balanceElement.length > 0) {
+      $balanceElement.html(balance.toNumber());
+    }
   }
 };
 
