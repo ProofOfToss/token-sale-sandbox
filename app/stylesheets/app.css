@@ -45,17 +45,21 @@ p {
     border: 1px solid red;
 }
 
-.crowdsale table td span {
+.crowdsale-info table td {
+    padding: 0 10px 0 10px;
+}
+
+.crowdsale-info table td span {
     font-weight: bold;
 }
 
-.crowdsale table td.bonuses {
+.crowdsale-info table td.bonuses {
     padding-top: 10px;
 }
 
 .crowdsale-purchases table th,
 .crowdsale-purchases table td {
-    padding: 0 10px 0 10px;
+    padding: 0 20px 0 20px;
 }
 
 .crowdsale-actions1,
@@ -64,4 +68,5 @@ p {
     display: inline-block;
     width: 32%;
     vertical-align: top;
+    border: 1px solid black;
 }
