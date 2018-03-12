@@ -57,3 +57,11 @@ p {
 .crowdsale-purchases table td {
     padding: 0 10px 0 10px;
 }
+
+.crowdsale-actions1,
+.crowdsale-actions2,
+.crowdsale-actions3 {
+    display: inline-block;
+    width: 32%;
+    vertical-align: top;
+}
