@@ -1,5 +1,7 @@
 # Proof of Toss token sale sandbox
 
+Status: WIP
+
 ## Requirements
 
 * nodejs >= 6.11
