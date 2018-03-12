@@ -364,7 +364,7 @@ window.App = {
     crowdsaleInfoFetched = true;
 
     // Set HTML info
-    $('.js-cs-overall').html(data.overall.toNumber());
+    $('.js-cs-overall').html(data.overall.toNumber() / 10**18);
     $('.js-cs-is-finalized').html(data.isFinalized ? 'Yes' : 'No');
     $('.js-cs-is-initialized').html(data.isInitialized ? 'Yes' : 'No');
     $('.js-cs-is-paused-crowdsale').html(data.isPausedCrowdsale ? 'Yes' : 'No');
@@ -379,7 +379,7 @@ window.App = {
     $('.js-cs-min-pay').html(data.minPay.toNumber() / 10**3);
     $('.js-cs-wei-raised').html(data.weiRaised.toNumber() / 10**18);
     $('.js-cs-wei-total-raised').html(data.weiTotalRaised.toNumber() / 10**18);
-    $('.js-cs-token-reserved').html(data.tokenReserved.toNumber());
+    $('.js-cs-token-reserved').html(data.tokenReserved.toNumber() / 10**18);
     $('.js-cs-bounty').html(data.bounty ? 'Yes' : 'No');
     $('.js-cs-team').html(data.team ? 'Yes' : 'No');
     $('.js-cs-company').html(data.company ? 'Yes' : 'No');
