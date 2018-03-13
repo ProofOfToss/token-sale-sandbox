@@ -65,15 +65,17 @@ window.App = {
     var $purchaseContainer = $('.js-crowdsale-purchases');
 
     tokenPurchaseEvent.watch(function(error, result) {
-      let e = result.args;
-      let html = '<tr>';
-      html += '<td>' + e.purchaser + '</td>';
-      html += '<td>' + e.beneficiary + '</td>';
-      html += '<td>' + e.value.toNumber() / 10**18  + '</td>';
-      html += '<td>' + e.amount.toNumber() / 10**18 + '</td>';
-      html += '</tr>';
+      if ($('[data-tx-id="' + result.transactionHash + '"]').length == 0) {
+        let e = result.args;
+        let html = '<tr data-tx-id="' + result.transactionHash + '">';
+        html += '<td>' + e.purchaser + '</td>';
+        html += '<td>' + e.beneficiary + '</td>';
+        html += '<td>' + e.value.toNumber() / 10**18  + '</td>';
+        html += '<td>' + e.amount.toNumber() / 10**18 + '</td>';
+        html += '</tr>';
 
-      $purchaseContainer.append($(html));
+        $purchaseContainer.append($(html));
+      }
     });
   },
 
@@ -151,9 +153,9 @@ window.App = {
     });
 
     $('.js-cs-actions-change-rate').click(function () {
-      var rate = parseInt($('.js-cs-actions-setup-rate').val(), 10);
-      var overLimit = parseInt($('.js-cs-actions-setup-over-limit').val(), 10);
-      var minPay = parseInt($('.js-cs-actions-setup-min-pay').val(), 10);
+      var rate = parseInt($('.js-cs-actions-change-rate-rate').val(), 10);
+      var overLimit = parseInt($('.js-cs-actions-change-rate-over-limit').val(), 10);
+      var minPay = parseInt($('.js-cs-actions-change-rate-min-pay').val(), 10);
 
       console.log(rate, overLimit, minPay, from);
       crowdsale.changeRate(rate, overLimit, minPay, from);
@@ -229,7 +231,7 @@ window.App = {
     });
 
     $('.js-cs-actions-token-unpause').click(function () {
-      crowdsale.tokenUnause(from);
+      crowdsale.tokenUnpause(from);
     });
 
     $('.js-cs-actions-crowdsale-pause').click(function () {
@@ -245,20 +247,20 @@ window.App = {
       var nonEthSum = parseInt($('.js-cs-actions-payments-in-other-currency-non-eth-sum').val(), 10);
 
       console.log(pTokenAmount, nonEthSum);
-      crowdsale.paymentsInOtherCurrency(pTokenAmount, nonEthSum);
+      crowdsale.paymentsInOtherCurrency(pTokenAmount, nonEthSum, from);
     });
 
     $('.js-cs-actions-change-wallet').click(function () {
       var role = $('.js-cs-actions-change-wallet-role').val();
       var address = $('.js-cs-actions-change-wallet-address').val();
 
-      console.log(rate, address);
-      crowdsale.changeWallet(rate, address);
+      console.log(role, address);
+      crowdsale.changeWallet(role, address, from);
     });
 
     $('.js-cs-actions-buy-tokens').click(function () {
       var benificiary = $('.js-cs-actions-buy-tokens-benificiary').val();
-      var value = web3.toWei(parseInt($('.js-cs-actions-buy-tokens-value').val(), 10));
+      var value = web3.toWei(parseFloat($('.js-cs-actions-buy-tokens-value').val()));
 
       console.log(benificiary, {from: account, value: value});
       crowdsale.buyTokens(benificiary, {from: account, value: value});
@@ -376,7 +378,7 @@ window.App = {
     $('.js-cs-soft-cap').html(data.softCap.toNumber() / 10**18);
     $('.js-cs-hard-cap').html(data.hardCap.toNumber() / 10**18);
     $('.js-cs-over-limit').html(data.overLimit.toNumber() / 10**18);
-    $('.js-cs-min-pay').html(data.minPay.toNumber() / 10**3);
+    $('.js-cs-min-pay').html(data.minPay.toNumber() / 10**18);
     $('.js-cs-wei-raised').html(data.weiRaised.toNumber() / 10**18);
     $('.js-cs-wei-total-raised').html(data.weiTotalRaised.toNumber() / 10**18);
     $('.js-cs-token-reserved').html(data.tokenReserved.toNumber() / 10**18);
