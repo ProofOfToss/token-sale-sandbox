@@ -6,8 +6,8 @@ Status: WIP
 
 * nodejs >= 6.11
 * npm >= 3.10
-* truffle >= 4
-* solidity >= 4.0.18
+* truffle >= 4.1.5
+* solidity (solc) >= 4.0.21
 
 ## Description
 
