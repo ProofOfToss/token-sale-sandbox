@@ -134,17 +134,15 @@ window.App = {
 
     $('.js-cs-actions-change-period').click(function () {
       var startTime = parseInt($('.js-cs-actions-change-period-start-time').val(), 10);
-      var endDiscountTime = parseInt($('.js-cs-actions-change-period-end-discount-time').val(), 10);
       var endTime = parseInt($('.js-cs-actions-change-period-end-time').val(), 10);
 
-      console.log(startTime, endDiscountTime, endTime, from);
-      crowdsale.changePeriod(startTime, endDiscountTime, endTime, from);
+      console.log(startTime, endTime, from);
+      crowdsale.changePeriod(startTime, endTime, from);
     });
 
     $('.js-cs-actions-setup').click(() => {
       var bonuses = this.collectBonusData('js-cs-actions-setup');
       var startTime = parseInt($('.js-cs-actions-setup-start-time').val(), 10);
-      var endDiscountTime = parseInt($('.js-cs-actions-setup-end-discount-time').val(), 10);
       var endTime = parseInt($('.js-cs-actions-setup-end-time').val(), 10);
       var softCap = parseInt($('.js-cs-actions-setup-soft-cap').val(), 10);
       var hardCap = parseInt($('.js-cs-actions-setup-hard-cap').val(), 10);
@@ -153,12 +151,12 @@ window.App = {
       var minPay = parseInt($('.js-cs-actions-setup-min-pay').val(), 10);
 
       console.log(
-        startTime, endDiscountTime, endTime, softCap, hardCap, rate, overLimit, minPay,
+        startTime, endTime, softCap, hardCap, rate, overLimit, minPay,
         bonuses.value, bonuses.procent, bonuses.freezeTime, from
       );
 
       crowdsale.setup(
-        startTime, endDiscountTime, endTime, softCap, hardCap, rate, overLimit, minPay,
+        startTime, endTime, softCap, hardCap, rate, overLimit, minPay,
         bonuses.value, bonuses.procent, bonuses.freezeTime, from
       );
     });
@@ -318,13 +316,12 @@ window.App = {
 
     // Gather info from blockchain
     var data = {
-      overall: await crowdsale.overall(),
+      totalSaledToken: await crowdsale.totalSaledToken(),
       isFinalized: await crowdsale.isFinalized(),
       isInitialized: await crowdsale.isInitialized(),
       isPausedCrowdsale: await crowdsale.isPausedCrowdsale(),
-      startMint: await crowdsale.startMint(),
+      canFirstMint: await crowdsale.canFirstMint(),
       startTime: await crowdsale.startTime(),
-      endDiscountTime: await crowdsale.endDiscountTime(),
       endTime: await crowdsale.endTime(),
       rate: await crowdsale.rate(),
       softCap: await crowdsale.softCap(),
@@ -332,11 +329,8 @@ window.App = {
       overLimit: await crowdsale.overLimit(),
       minPay: await crowdsale.minPay(),
       weiRaised: await crowdsale.weiRaised(),
-      weiTotalRaised: await crowdsale.weiTotalRaised(),
+      nonEthWeiRaised: await crowdsale.nonEthWeiRaised(),
       tokenReserved: await crowdsale.tokenReserved(),
-      bounty: await crowdsale.bounty(),
-      team: await crowdsale.team(),
-      company: await crowdsale.company(),
       tokenSaleType: await crowdsale.getTokenSaleType(),
       hasEnded: await crowdsale.hasEnded(),
       goalReached: await crowdsale.goalReached(),
@@ -354,10 +348,21 @@ window.App = {
 
     data['bonuses'] = bonuses;
 
+    var bonusesByDate = [];
+
+    for (let i = 0; i < 10; i++) {
+      // since we cannot iterate over mapping, try to get 10 profits (in reality there will be only 3-4 profits)
+      try {
+        bonusesByDate[i] = await crowdsale.profits(i);
+      } catch (Error) {}
+    }
+
+    data['bonusesByDate'] = bonusesByDate;
+
     // Set actions input default values
     // Set values only once when the page is initialized
     if (crowdsaleInfoFetched === false) {
-      var numberedData = ['startTime', 'endTime', 'endDiscountTime', 'rate', 'softCap', 'hardCap', 'overLimit', 'minPay'];
+      var numberedData = ['startTime', 'endTime', 'rate', 'softCap', 'hardCap', 'overLimit', 'minPay'];
 
       $.each(numberedData, function (k, v) {
         $('[data-c-name="' + v + '"]').each(function () {
@@ -393,31 +398,28 @@ window.App = {
     crowdsaleInfoFetched = true;
 
     // Set HTML info
-    $('.js-cs-overall').html(data.overall.toNumber() / 10**18);
+    $('.js-cs-total-saled-token').html(data.totalSaledToken.toNumber() / 10**18);
     $('.js-cs-is-finalized').html(data.isFinalized ? 'Yes' : 'No');
     $('.js-cs-is-initialized').html(data.isInitialized ? 'Yes' : 'No');
     $('.js-cs-is-paused-crowdsale').html(data.isPausedCrowdsale ? 'Yes' : 'No');
-    $('.js-cs-start-mint').html(data.startMint ? 'Yes' : 'No');
+    $('.js-cs-can-first-mint').html(data.canFirstMint ? 'Yes' : 'No');
     $('.js-cs-start-time').html(this.getDateTime(data.startTime.toNumber()));
-    $('.js-cs-end-discount-time').html(this.getDateTime(data.endDiscountTime.toNumber()));
     $('.js-cs-end-time').html(this.getDateTime(data.endTime.toNumber()));
-    $('.js-cs-rate').html(data.rate.toNumber());
+    $('.js-cs-rate').html(data.rate.toNumber() / 10**18);
     $('.js-cs-soft-cap').html(data.softCap.toNumber() / 10**18);
     $('.js-cs-hard-cap').html(data.hardCap.toNumber() / 10**18);
     $('.js-cs-over-limit').html(data.overLimit.toNumber() / 10**18);
     $('.js-cs-min-pay').html(data.minPay.toNumber() / 10**18);
-    $('.js-cs-wei-raised').html(data.weiRaised.toNumber() / 10**18);
-    $('.js-cs-wei-total-raised').html(data.weiTotalRaised.toNumber() / 10**18);
+    $('.js-cs-eth-wei-raised').html(data.weiRaised.toNumber() / 10**18);
+    $('.js-cs-non-eth-wei-raised').html(data.nonEthWeiRaised.toNumber() / 10**18);
     $('.js-cs-token-reserved').html(data.tokenReserved.toNumber() / 10**18);
-    $('.js-cs-bounty').html(data.bounty ? 'Yes' : 'No');
-    $('.js-cs-team').html(data.team ? 'Yes' : 'No');
-    $('.js-cs-company').html(data.company ? 'Yes' : 'No');
     $('.js-cs-token-sale-type').html(data.tokenSaleType);
     $('.js-cs-has-ended').html(data.hasEnded ? 'Yes' : 'No');
     $('.js-cs-goal-reached').html(data.goalReached ? 'Yes' : 'No');
     $('.js-cs-get-profit-percent').html(data.getProfitPercent.toNumber());
 
     $('.js-cs-bonuses').empty();
+    $('.js-cs-bonuses-by-date').empty();
 
     $.each(data.bonuses, function (k, b) {
       let html = '<tr>';
@@ -427,6 +429,15 @@ window.App = {
       html += '</tr>';
 
       $('.js-cs-bonuses').append(html);
+    });
+
+    $.each(data.bonusesByDate, function (k, b) {
+      let html = '<tr>';
+      html += '<td>' + b[0].toNumber() + '%</td>';
+      html += '<td>' + b[1].toNumber() + ' days</td>';
+      html += '</tr>';
+
+      $('.js-cs-bonuses-by-date').append(html);
     });
   },
 
