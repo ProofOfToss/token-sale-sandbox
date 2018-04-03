@@ -63,39 +63,85 @@ window.App = {
     if (window.GLOBAL_IS_INDEX_PAGE === true) {
       this.refreshBalance();
       this.listenToPurchaseEvents();
+      this.listenToOtherEvents();
       this.listenToTokenActions();
 
       setInterval(() => this.showCrowdsaleInfo(), 1000);
     } else if (window.GLOBAL_IS_CONTROLS_PAGE === true) {
+      this.listenToOtherEvents();
       this.listenToCrowdsaleActions();
     }
   },
 
 
   listenToPurchaseEvents: async function () {
-    // create a new web3 objects, because the one which comes from MetaMask has problems with events litening
+    // create a new web3 objects, because the one which comes from MetaMask has problems with events listening
     customWeb3 = new Web3(web3.currentProvider);
 
     var TossCrowdsale2 = contract(toss_crowdsale_artifacts);
     TossCrowdsale2.setProvider(customWeb3.currentProvider);
 
-    var crowdsale = await TossCrowdsale.deployed();
+    var crowdsale = await TossCrowdsale2.deployed();
     var tokenPurchaseEvent = crowdsale.TokenPurchase({}, {fromBlock: 0, toBlock: 'latest'});
     var $purchaseContainer = $('.js-crowdsale-purchases');
 
     tokenPurchaseEvent.watch(function(error, result) {
       if ($('[data-tx-id="' + result.transactionHash + '"]').length == 0) {
-        let e = result.args;
-        let html = '<tr data-tx-id="' + result.transactionHash + '">';
-        html += '<td>' + e.purchaser + '</td>';
-        html += '<td>' + e.beneficiary + '</td>';
-        html += '<td>' + e.value.toNumber() / 10**18  + '</td>';
-        html += '<td>' + e.amount.toNumber() / 10**18 + '</td>';
-        html += '</tr>';
+        web3.eth.getBlock(result.blockNumber, function (e, r) {
+          let e = result.args;
+          let html = '<tr data-tx-id="' + result.transactionHash + '">';
+          html += '<td>' + self.getDateTime(r.timestamp) + '</td>';
+          html += '<td>' + e.purchaser + '</td>';
+          html += '<td>' + e.beneficiary + '</td>';
+          html += '<td>' + e.value.toNumber() / 10**18  + '</td>';
+          html += '<td>' + e.amount.toNumber() / 10**18 + '</td>';
+          html += '</tr>';
 
-        $purchaseContainer.append($(html));
+          $purchaseContainer.append($(html));
+        });
       }
     });
+  },
+
+
+  listenToOtherEvents: async function () {
+    var self = this;
+
+    // create a new web3 objects, because the one which comes from MetaMask has problems with events listening
+    customWeb3 = new Web3(web3.currentProvider);
+
+    const TossCrowdsale2 = contract(toss_crowdsale_artifacts);
+    TossCrowdsale2.setProvider(customWeb3.currentProvider);
+
+    const crowdsale = await TossCrowdsale2.deployed();
+    const tokenAddress = await crowdsale.token();
+    const toss = await web3.eth.contract(TossToken.abi).at(tokenAddress);
+
+    const events = [
+      ['Crowdsale', 'TokenPurchase'],
+      ['Crowdsale', 'Finalized'],
+      ['Crowdsale', 'Initialized'],
+      ['Token', 'OwnershipTransferred'],
+      ['Token', 'Pause'],
+      ['Token', 'Unpause'],
+      ['Token', 'Unpause'],
+      ['Token', 'Transfer'],
+      ['Token', 'Burn'],
+      ['Token', 'Migrate'],
+      ['Token', 'Mint'],
+      ['Token', 'Approval']
+    ];
+
+    for (let i = 0; i < events.length; i++) {
+      const c = events[i][0] === 'Crowdsale' ? crowdsale : toss;
+      const e = c[events[i][1]]({}, {fromBlock: 0, toBlock: 'latest'});
+
+      e.watch(function (error, result) {
+        web3.eth.getBlock(result.blockNumber, function (e, r) {
+          console.log('[NEW EVENT]', self.getDateTime(r.timestamp), events[i][0] + ' / ' + events[i][1], result.args);
+        });
+      });
+    }
   },
 
 
@@ -289,7 +335,7 @@ window.App = {
     // Send TOSS
     const crowdsale = await TossCrowdsale.deployed();
     const tokenAddress = await crowdsale.token();
-    const toss = web3.eth.contract(TossToken.abi).at(tokenAddress);
+    const toss = await web3.eth.contract(TossToken.abi).at(tokenAddress);
 
     $('.js-send-toss').click(function () {
       var address = $('.js-send-toss-address').val();
@@ -445,7 +491,7 @@ window.App = {
   refreshBalance: async function() {
     const crowdsale = await TossCrowdsale.deployed();
     const tokenAddress = await crowdsale.token();
-    const toss = web3.eth.contract(TossToken.abi).at(tokenAddress);
+    const toss = await web3.eth.contract(TossToken.abi).at(tokenAddress);
 
     const balance = await toss.balanceOf(account, {from: account}, function (e, r) {
       console.log(e, r);
