@@ -45,6 +45,16 @@ p {
     border: 1px solid red;
 }
 
+.token-actions {
+    border: 1px solid blue;
+}
+
+.token-actions table td {
+    vertical-align: top;
+    margin: 0 5px 0 5px;
+    border: dashed gray 1px;
+}
+
 .crowdsale-info table td {
     padding: 0 10px 0 10px;
     vertical-align: top;

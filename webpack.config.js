@@ -12,6 +12,7 @@ module.exports = {
     new CopyWebpackPlugin([
       { from: './app/index.html', to: "index.html" },
       { from: './app/controls.html', to: "controls.html" },
+      { from: './app/token.html', to: "token.html" },
     ])
   ],
   module: {

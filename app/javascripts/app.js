@@ -60,17 +60,19 @@ window.App = {
 
 
   _init: function () {
+    this.listenToOtherEvents();
+
     if (window.GLOBAL_IS_INDEX_PAGE === true) {
       this.refreshBalance();
       this.listenToPurchaseEvents();
-      this.listenToOtherEvents();
-      this.listenToTokenActions();
 
       setInterval(() => this.showCrowdsaleInfo(), 1000);
     } else if (window.GLOBAL_IS_CONTROLS_PAGE === true) {
-      this.listenToOtherEvents();
       this.listenToCrowdsaleActions();
       this.showCrowdsaleInfoInForm();
+    } else if (window.GLOBAL_IS_TOKEN_PAGE === true) {
+      this.refreshBalance();
+      this.listenToTokenActions();
     }
   },
 
@@ -382,14 +384,163 @@ window.App = {
     const crowdsale = await TossCrowdsale.deployed();
     const tokenAddress = await crowdsale.token();
     const toss = await web3.eth.contract(TossToken.abi).at(tokenAddress);
+    const from = {from: account};
 
-    $('.js-send-toss').click(function () {
-      var address = $('.js-send-toss-address').val();
-      var amount = parseInt($('.js-send-toss-amount').val(), 10);
+    $('.js-t-actions-transfer').click(function () {
+      var address = $('.js-t-actions-transfer-address').val();
+      var amount = parseInt($('.js-t-actions-transfer-amount').val(), 10) * 10**18;
 
-      console.log(address, amount);
+      console.log(address, amount, from);
 
-      toss.transfer(address, amount, {from: address}, function (e ,r) {
+      toss.transfer(address, amount, from, function (e ,r) {
+        console.log(e, r);
+      });
+    });
+
+    $('.js-t-actions-transfer-from').click(function () {
+      var addressFrom = $('.js-t-actions-transfer-from-from-address').val();
+      var addressTo = $('.js-t-actions-transfer-from-to-address').val();
+      var amount = parseInt($('.js-t-actions-transfer-from-amount').val(), 10) * 10**18;
+
+      console.log(addressFrom, addressTo, amount, from);
+
+      toss.transferFrom(addressFrom, addressTo, amount, from, function (e ,r) {
+        console.log(e, r);
+      });
+    });
+
+    $('.js-t-actions-approve').click(function () {
+      var address = $('.js-t-actions-approve-address').val();
+      var amount = parseInt($('.js-t-actions-approve-amount').val(), 10) * 10**18;
+
+      console.log(address, amount, from);
+
+      toss.approve(address, amount, from, function (e ,r) {
+        console.log(e, r);
+      });
+    });
+
+    $('.js-t-actions-increase-approval').click(function () {
+      var address = $('.js-t-actions-increase-approval-address').val();
+      var amount = parseInt($('.js-t-actions-increase-approval-amount').val(), 10) * 10**18;
+
+      console.log(address, amount, from);
+
+      toss.increaseApproval(address, amount, from, function (e ,r) {
+        console.log(e, r);
+      });
+    });
+
+    $('.js-t-actions-decrease-approval').click(function () {
+      var address = $('.js-t-actions-decrease-approval-address').val();
+      var amount = parseInt($('.js-t-actions-decrease-approval-amount').val(), 10) * 10**18;
+
+      console.log(address, amount, from);
+
+      toss.decreaseApproval(address, amount, from, function (e ,r) {
+        console.log(e, r);
+      });
+    });
+
+    $('.js-t-actions-migrate').click(function () {
+      toss.migrate(from, function (e ,r) {
+        console.log(e, r);
+      });
+    });
+
+    $('.js-t-actions-check-frozen-token-balance').click(function () {
+      var address = $('.js-t-actions-check-frozen-token-balance-address').val();
+
+      console.log(address, from);
+
+      toss.freezedTokenOf(address, from, function (e ,r) {
+        console.log(e, r.toNumber());
+      });
+    });
+
+    $('.js-t-actions-check-frozen-token-defrost-date').click(function () {
+      var address = $('.js-t-actions-check-frozen-token-defrost-date-address').val();
+
+      console.log(address, from);
+
+      toss.defrostDate(address, from, function (e ,r) {
+        console.log(e, r.toNumber());
+      });
+    });
+
+    $('.js-t-actions-set-unpaused-wallet').click(function () {
+      var address = $('.js-t-actions-set-unpaused-wallet-address').val();
+      var mode = $('.js-t-actions-set-unpaused-wallet-mode').val() ? true : false;
+
+      console.log(address, mode, from);
+
+      toss.setUnpausedWallet(address, mode, from, function (e ,r) {
+        console.log(e, r);
+      });
+    });
+
+    $('.js-t-js-t-actions-transfer-and-freeze-transfer').click(function () {
+      var address = $('.js-t-actions-transfer-and-freeze-address').val();
+      var amount = parseInt($('.js-t-actions-transfer-and-freeze-amount').val(), 10) * 10**18;
+      var when = parseInt($('.js-t-actions-transfer-and-freeze-when').val(), 10);
+
+      console.log(address, amount, when, from);
+
+      toss.transferAndFreeze(address, amount, when, from, function (e ,r) {
+        console.log(e, r);
+      });
+    });
+
+    $('.js-t-actions-freeze-tokens').click(function () {
+      var address = $('.js-t-actions-freeze-tokens-address').val();
+      var amount = parseInt($('.js-t-actions-freeze-tokens-amount').val(), 10) * 10**18;
+      var when = parseInt($('.js-t-actions-freeze-tokens-when').val(), 10);
+
+      console.log(address, amount, when, from);
+
+      toss.freezeTokens(address, amount, when, from, function (e ,r) {
+        console.log(e, r);
+      });
+    });
+
+    $('.js-t-actions-mass-freeze-tokens').click(function () {
+      var beneficiaries = [];
+      var amounts = [];
+      var whens = [];
+
+      var addr1 = $('.js-t-actions-mass-freeze-tokens-ben1-address').val();
+      var addr2 = $('.js-t-actions-mass-freeze-tokens-ben2-address').val();
+      var addr3 = $('.js-t-actions-mass-freeze-tokens-ben3-address').val();
+
+      var amount1 = $('.js-t-actions-mass-freeze-tokens-ben1-amount').val();
+      var amount2 = $('.js-t-actions-mass-freeze-tokens-ben2-amount').val();
+      var amount3 = $('.js-t-actions-mass-freeze-tokens-ben3-amount').val();
+
+      var when1 = $('.js-t-actions-mass-freeze-tokens-ben1-when').val();
+      var when2 = $('.js-t-actions-mass-freeze-tokens-ben2-when').val();
+      var when3 = $('.js-t-actions-mass-freeze-tokens-ben3-when').val();
+
+      if (addr1 && amount1 && when1) {
+        beneficiaries.push(addr1);
+        amounts.push(parseInt(amount1, 10) * 10**18);
+        whens.push(parseInt(when1, 10));
+      }
+
+      if (addr2 && amount2 && when2) {
+        beneficiaries.push(addr2);
+        amounts.push(parseInt(amount2, 10) * 10**18);
+        whens.push(parseInt(when2, 10));
+      }
+
+      if (addr3 && amount3 && when3) {
+        beneficiaries.push(addr3);
+        amounts.push(parseInt(amount3, 10) * 10**18);
+        whens.push(parseInt(when3, 10));
+      }
+
+      console.log(beneficiaries, amounts, whens, from);
+
+      toss.masFreezedTokens(beneficiaries, amounts, whens, from, function (e ,r) {
         console.log(e, r);
       });
     });

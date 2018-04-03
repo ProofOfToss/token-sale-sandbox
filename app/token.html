@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Toss Token & Crowdsale sandbox</title>
+    <script>
+        window.GLOBAL_IS_TOKEN_PAGE = true;
+    </script>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="./app.js"></script>
+</head>
+<body>
+<div>
+    <b>Useful links:</b>
+    <ul>
+        <li><a href="https://www.epochconverter.com/" target="_blank">Unix timestamp convertor</a></li>
+        <li><a href="https://etherconverter.online/" target="_blank">ETH currency converter</a></li>
+        <li><a href="https://defuse.ca/big-number-calculator.htm">Large numbers calculator</a></li>
+    </ul>
+</div>
+
+<div class="token-actions">
+    <h2>Toss Token actions</h2>
+    <h3>You have <span class="black"><span id="balance"></span> TOSS</span></h3>
+    <table>
+        <tbody>
+        <tr>
+            <td>
+                <h4>Transfer token</h4>
+                <label>Amount:</label>
+                <input type="text" class="js-t-actions-transfer-amount" placeholder="e.g., 95"/>
+                <br><label>To Address:</label>
+                <input type="text" class="js-t-actions-transfer-address" placeholder="e.g., 0x93e66d9baea28c17d9fc393b53e3fbdd76899dae"/>
+                <br>
+                <button class="js-t-actions-transfer">Send Toss</button>
+            </td>
+            <td>
+                <h4>Transfer token from</h4>
+                <label>Amount:</label>
+                <input type="text" class="js-t-actions-transfer-from-amount" placeholder="e.g., 95"/>
+                <br><label>From Address:</label>
+                <input type="text" class="js-t-actions-transfer-from-from-address" placeholder="e.g., 0x93e66d9baea28c17d9fc393b53e3fbdd76899dae"/>
+                <br><label>To Address:</label>
+                <input type="text" class="js-t-actions-transfer-from-to-address" placeholder="e.g., 0x93e66d9baea28c17d9fc393b53e3fbdd76899dae"/>
+                <br>
+                <button class="js-t-actions-transfer-from">Send Toss</button>
+            </td>
+            <td>
+                <h4>Approve</h4>
+                <label>Amount:</label>
+                <input type="text" class="js-t-actions-approve-amount" placeholder="e.g., 95"/>
+                <br><label>Spender Address:</label>
+                <input type="text" class="js-t-actions-approve-address" placeholder="e.g., 0x93e66d9baea28c17d9fc393b53e3fbdd76899dae"/>
+                <br>
+                <button class="js-t-actions-approve">Approve</button>
+            </td>
+            <td>
+                <h4>Increase approval</h4>
+                <label>Amount:</label>
+                <input type="text" class="js-t-actions-increase-approval-amount" placeholder="e.g., 95"/>
+                <br><label>Spender Address:</label>
+                <input type="text" class="js-t-actions-increase-approval-address" placeholder="e.g., 0x93e66d9baea28c17d9fc393b53e3fbdd76899dae"/>
+                <br>
+                <button class="js-t-actions-increase-approval">Increase</button>
+            </td>
+            <td>
+                <h4>Decrease approval</h4>
+                <label>Amount:</label>
+                <input type="text" class="js-t-actions-decrease-approval-amount" placeholder="e.g., 95"/>
+                <br><label>Spender Address:</label>
+                <input type="text" class="js-t-actions-decrease-approval-address" placeholder="e.g., 0x93e66d9baea28c17d9fc393b53e3fbdd76899dae"/>
+                <br>
+                <button class="js-t-actions-decrease-approval">Decrease</button>
+            </td>
+            <td>
+                <h4>Check allowance</h4>
+                <br><label>Owner Address:</label>
+                <input type="text" class="js-t-actions-allowance-owner-address" placeholder="e.g., 0x93e66d9baea28c17d9fc393b53e3fbdd76899dae"/>
+                <br><label>Spender Address:</label>
+                <input type="text" class="js-t-actions-allowance-spender-address" placeholder="e.g., 0x93e66d9baea28c17d9fc393b53e3fbdd76899dae"/>
+                <button class="js-t-actions-allowance">Check allowance</button>
+            </td>
+            <td>
+                <h4>Migrate</h4>
+                <button class="js-t-actions-migrate">Migrate</button>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <h4>Check frozen token balance</h4>
+                <br><label>Address:</label>
+                <input type="text" class="js-t-actions-check-frozen-token-balance-address" placeholder="e.g., 0x93e66d9baea28c17d9fc393b53e3fbdd76899dae"/>
+                <button class="js-t-actions-check-frozen-token-balance">Check frozen token balance</button>
+            </td>
+            <td>
+                <h4>Check frozen token defrost date</h4>
+                <br><label>Address:</label>
+                <input type="text" class="js-t-actions-check-frozen-token-defrost-date-address" placeholder="e.g., 0x93e66d9baea28c17d9fc393b53e3fbdd76899dae"/>
+                <button class="js-t-actions-check-frozen-token-defrost-date">Check frozen token defrost date</button>
+            </td>
+            <td>
+                <h4>Set unpaused wallet</h4>
+                <i>Available to manager only</i><br>
+                <label>Address:</label>
+                <input type="text" class="js-t-actions-set-unpaused-wallet-address"/>
+                <br><label>Mode (0 / 1):</label>
+                <input type="text" class="js-t-actions-set-unpaused-wallet-mode"/>
+                <br>
+                <button class="js-t-actions-set-unpaused-wallet">Set unpaused wallet</button>
+            </td>
+            <td>
+                <h4>Transfer and freeze</h4>
+                <i>Available to unpaused wallet only</i><br>
+                <label>Address:</label>
+                <input type="text" class="js-t-actions-transfer-and-freeze-address"/>
+                <br><label>Amount:</label>
+                <input type="text" class="js-t-actions-transfer-and-freeze-amount"/>
+                <br><label>When to defrost (unix timestamp):</label>
+                <input type="text" class="js-t-actions-transfer-and-freeze-when"/>
+                <br>
+                <button class="js-t-actions-transfer-and-freeze">Transfer and freeze</button>
+            </td>
+            <td>
+                <h4>Freeze tokens</h4>
+                <i>Available to manager only</i><br>
+                <label>Address:</label>
+                <input type="text" class="js-t-actions-freeze-tokens-address"/>
+                <br><label>Amount:</label>
+                <input type="text" class="js-t-actions-freeze-tokens-amount"/>
+                <br><label>When to defrost (unix timestamp):</label>
+                <input type="text" class="js-t-actions-freeze-tokens-when"/>
+                <br>
+                <button class="js-t-actions-freeze-tokens">Freeze tokens</button>
+            </td>
+            <td>
+                <h4>Mass freeze tokens</h4>
+                <i>Available to manager only</i><br>
+                <i>Limited to 3 records per transaction only (to simplify the sandbox)</i><br>
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Beneficiary</th>
+                        <th>Address</th>
+                        <th>Amount</th>
+                        <th>Defrost date (unix timestamp)</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>Beneficiary 1</td>
+                        <td><input type="text" class="js-t-actions-mass-freeze-tokens-ben1-address"/></td>
+                        <td><input type="text" class="js-t-actions-mass-freeze-tokens-ben1-amount"/></td>
+                        <td><input type="text" class="js-t-actions-mass-freeze-tokens-ben1-when"/></td>
+                    </tr>
+                    <tr>
+                        <td>Beneficiary 2</td>
+                        <td><input type="text" class="js-t-actions-mass-freeze-tokens-ben2-address"/></td>
+                        <td><input type="text" class="js-t-actions-mass-freeze-tokens-ben2-amount"/></td>
+                        <td><input type="text" class="js-t-actions-mass-freeze-tokens-ben2-when"/></td>
+                    </tr>
+                    <tr>
+                        <td>Beneficiary 3</td>
+                        <td><input type="text" class="js-t-actions-mass-freeze-tokens-ben3-address"/></td>
+                        <td><input type="text" class="js-t-actions-mass-freeze-tokens-ben3-amount"/></td>
+                        <td><input type="text" class="js-t-actions-mass-freeze-tokens-ben3-when"/></td>
+                    </tr>
+                    </tbody>
+                </table>
+                <button class="js-t-actions-mass-freeze-tokens">Mass freeze tokens</button>
+            </td>
+            <td>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+</body>
+</html>
