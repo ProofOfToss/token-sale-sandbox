@@ -262,10 +262,6 @@ window.App = {
       crowdsale.claimRefund(from);
     });
 
-    $('.js-cs-actions-get-cash').click(function () {
-      crowdsale.getCash(from);
-    });
-
     $('.js-cs-actions-reset-all-wallets').click(function () {
       crowdsale.resetAllWallets(from);
     });
