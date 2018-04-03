@@ -70,6 +70,7 @@ window.App = {
     } else if (window.GLOBAL_IS_CONTROLS_PAGE === true) {
       this.listenToOtherEvents();
       this.listenToCrowdsaleActions();
+      this.showCrowdsaleInfoInForm();
     }
   },
 
@@ -174,61 +175,61 @@ window.App = {
   },
 
 
+  collectBonusByDateData: function (selectorPrefix) {
+    var bonusesByDate = {
+      duration: [],
+      percent: []
+    };
+
+    $('.' + selectorPrefix + '-duration').each(function () {
+      if ($(this).val() != '') {
+        bonusesByDate.duration[parseInt($(this).data('bonus'), 10)] = parseInt($(this).val(), 10);
+      }
+    });
+
+    $('.' + selectorPrefix + '-percent').each(function () {
+      if ($(this).val() != '') {
+        bonusesByDate.percent[parseInt($(this).data('bonus'), 10)] = parseInt($(this).val(), 10);
+      }
+    });
+
+    return bonusesByDate;
+  },
+
+
   listenToCrowdsaleActions: async function () {
     var crowdsale = await TossCrowdsale.deployed();
     var from = {from: account};
 
-    $('.js-cs-actions-change-period').click(function () {
-      var startTime = parseInt($('.js-cs-actions-change-period-start-time').val(), 10);
-      var endTime = parseInt($('.js-cs-actions-change-period-end-time').val(), 10);
-
-      console.log(startTime, endTime, from);
-      crowdsale.changePeriod(startTime, endTime, from);
-    });
-
     $('.js-cs-actions-setup').click(() => {
       var bonuses = this.collectBonusData('js-cs-actions-setup');
+      var bonusesByDate = this.collectBonusByDateData('js-cs-actions-setup-bonuses-by-date');
       var startTime = parseInt($('.js-cs-actions-setup-start-time').val(), 10);
       var endTime = parseInt($('.js-cs-actions-setup-end-time').val(), 10);
       var softCap = parseInt($('.js-cs-actions-setup-soft-cap').val(), 10);
       var hardCap = parseInt($('.js-cs-actions-setup-hard-cap').val(), 10);
       var rate = parseInt($('.js-cs-actions-setup-rate').val(), 10);
+      var maxAllProfit = parseInt($('.js-cs-actions-setup-max-all-profit').val(), 10);
       var overLimit = parseInt($('.js-cs-actions-setup-over-limit').val(), 10);
       var minPay = parseInt($('.js-cs-actions-setup-min-pay').val(), 10);
 
       console.log(
-        startTime, endTime, softCap, hardCap, rate, overLimit, minPay,
-        bonuses.value, bonuses.procent, bonuses.freezeTime, from
+        startTime, endTime, softCap, hardCap,
+        rate, 0,
+        maxAllProfit, overLimit, minPay,
+        bonusesByDate.duration, bonusesByDate.percent,
+        bonuses.value, bonuses.procent, bonuses.freezeTime,
+        from
       );
 
       crowdsale.setup(
-        startTime, endTime, softCap, hardCap, rate, overLimit, minPay,
-        bonuses.value, bonuses.procent, bonuses.freezeTime, from
+        startTime, endTime, softCap, hardCap,
+        rate, 0,
+        maxAllProfit, overLimit, minPay,
+        bonusesByDate.duration, bonusesByDate.percent,
+        bonuses.value, bonuses.procent, bonuses.freezeTime,
+        from
       );
-    });
-
-    $('.js-cs-actions-change-targets').click(function () {
-      var softCap = parseInt($('.js-cs-actions-change-targets-soft-cap').val(), 10);
-      var hardCap = parseInt($('.js-cs-actions-change-targets-hard-cap').val(), 10);
-
-      console.log(softCap, hardCap, from);
-      crowdsale.changeTargets(softCap, hardCap, from);
-    });
-
-    $('.js-cs-actions-change-rate').click(function () {
-      var rate = parseInt($('.js-cs-actions-change-rate-rate').val(), 10);
-      var overLimit = parseInt($('.js-cs-actions-change-rate-over-limit').val(), 10);
-      var minPay = parseInt($('.js-cs-actions-change-rate-min-pay').val(), 10);
-
-      console.log(rate, overLimit, minPay, from);
-      crowdsale.changeRate(rate, overLimit, minPay, from);
-    });
-
-    $('.js-cs-actions-set-bonuses').click(() => {
-      var bonuses = this.collectBonusData('js-cs-actions-set-bonuses');
-
-      console.log(bonuses.value, bonuses.procent, bonuses.freezeTime, from);
-      crowdsale.setBonuses(bonuses.value, bonuses.procent, bonuses.freezeTime, from);
     });
 
     $('.js-cs-actions-get-profit-percent-for-date').click(async function () {
@@ -239,24 +240,12 @@ window.App = {
       console.log(percent.toNumber());
     });
 
-    $('.js-cs-actions-finalize-all').click(function () {
-      crowdsale.finalizeAll(from);
-    });
-
     $('.js-cs-actions-finalize').click(function () {
       crowdsale.finalize(from);
     });
 
-    $('.js-cs-actions-finalize-1').click(function () {
-      crowdsale.finalize1(from);
-    });
-
     $('.js-cs-actions-finalize-2').click(function () {
       crowdsale.finalize2(from);
-    });
-
-    $('.js-cs-actions-finalize-3').click(function () {
-      crowdsale.finalize3(from);
     });
 
     $('.js-cs-actions-initialize').click(function () {
@@ -275,18 +264,75 @@ window.App = {
       crowdsale.getCash(from);
     });
 
-    $('.js-cs-actions-get-cash-custom').click(function () {
-      var address = $('.js-cs-actions-get-cash-custom-address').val();
-
-      console.log(address);
-      crowdsale.getCashFrom(address, from);
+    $('.js-cs-actions-reset-all-wallets').click(function () {
+      crowdsale.resetAllWallets(from);
     });
 
-    $('.js-cs-actions-fast-token-sale').click(function () {
-      var sum = parseInt($('.js-cs-actions-fast-token-sale-sum').val(), 10);
+    $('.js-cs-actions-first-mint-round0-mint').click(function () {
+      var count = parseInt($('.js-cs-actions-first-mint-round0-count').val(), 10);
 
-      console.log(sum);
-      crowdsale.fastTokenSale(sum, from);
+      console.log(count);
+      crowdsale.firstMintRound0(count, from);
+    });
+
+    $('.js-cs-actions-move-tokens').click(function () {
+      var address = $('.js-cs-actions-move-tokens-migration-agent-address').val();
+
+      console.log(address);
+      crowdsale.moveTokens(address, from);
+    });
+
+    $('.js-cs-actions-migrate-all').click(function () {
+      var holders = [];
+
+      var addr1 = $('.js-cs-actions-migrate-all-holder1-address').val();
+      var addr2 = $('.js-cs-actions-migrate-all-holder2-address').val();
+      var addr3 = $('.js-cs-actions-migrate-all-holder3-address').val();
+
+      if (addr1.length > 0) {
+        holders.push(addr1);
+      }
+
+      if (addr2.length > 0) {
+        holders.push(addr2);
+      }
+
+      if (addr3.length > 0) {
+        holders.push(addr3);
+      }
+
+      console.log(holders, from);
+      crowdsale.moveTokens(holders, from);
+    });
+
+    $('.js-cs-actions-mass-burn-tokens').click(function () {
+      var beneficiaries = [];
+      var values = [];
+
+      var addr1 = $('.js-cs-actions-mass-burn-tokens-ben1-address').val();
+      var addr2 = $('.js-cs-actions-mass-burn-tokens-ben2-address').val();
+      var addr3 = $('.js-cs-actions-mass-burn-tokens-ben3-address').val();
+      var value1 = $('.js-cs-actions-mass-burn-tokens-ben1-value').val();
+      var value2 = $('.js-cs-actions-mass-burn-tokens-ben2-value').val();
+      var value3 = $('.js-cs-actions-mass-burn-tokens-ben3-value').val();
+
+      if (addr1.length > 0 && value1.length > 0) {
+        beneficiaries.push(addr1);
+        values.push(parseInt(value1, 10));
+      }
+
+      if (addr2.length > 0 && value2.length > 0) {
+        beneficiaries.push(addr2);
+        values.push(parseInt(value2, 10));
+      }
+
+      if (addr3.length > 0 && value3.length > 0) {
+        beneficiaries.push(addr3);
+        values.push(parseInt(value3, 10));
+      }
+
+      console.log(beneficiaries, values, from);
+      crowdsale.massBurnTokens(beneficiaries, values, from);
     });
 
     $('.js-cs-actions-token-pause').click(function () {
@@ -298,11 +344,11 @@ window.App = {
     });
 
     $('.js-cs-actions-crowdsale-pause').click(function () {
-      crowdsale.crowdsalePause(from);
+      crowdsale.setCrowdsalePause(true, from);
     });
 
     $('.js-cs-actions-crowdsale-unpause').click(function () {
-      crowdsale.crowdsaleUnpause(from);
+      crowdsale.setCrowdsalePause(false, from);
     });
 
     $('.js-cs-actions-payments-in-other-currency').click(function () {
@@ -357,7 +403,7 @@ window.App = {
   },
 
 
-  showCrowdsaleInfo: async function() {
+  gatherDataFromCrowdsale: async function () {
     var crowdsale = await TossCrowdsale.deployed();
 
     // Gather info from blockchain
@@ -366,6 +412,7 @@ window.App = {
       isFinalized: await crowdsale.isFinalized(),
       isInitialized: await crowdsale.isInitialized(),
       isPausedCrowdsale: await crowdsale.isPausedCrowdsale(),
+      chargeBonuses: await crowdsale.chargeBonuses(),
       canFirstMint: await crowdsale.canFirstMint(),
       startTime: await crowdsale.startTime(),
       endTime: await crowdsale.endTime(),
@@ -380,7 +427,9 @@ window.App = {
       tokenSaleType: await crowdsale.getTokenSaleType(),
       hasEnded: await crowdsale.hasEnded(),
       goalReached: await crowdsale.goalReached(),
-      getProfitPercent: await crowdsale.getProfitPercent()
+      getProfitPercent: await crowdsale.getProfitPercent(),
+      totalSupply: await crowdsale.totalSupply(),
+      maxAllProfit: await crowdsale.maxAllProfit()
     };
 
     var bonuses = [];
@@ -389,7 +438,8 @@ window.App = {
       // since we cannot iterate over mapping, try to get 10 bonuses (in reality there will be only 1 bonus)
       try {
         bonuses[i] = await crowdsale.bonuses(i);
-      } catch (Error) {}
+      } catch (Error) {
+      }
     }
 
     data['bonuses'] = bonuses;
@@ -400,15 +450,24 @@ window.App = {
       // since we cannot iterate over mapping, try to get 10 profits (in reality there will be only 3-4 profits)
       try {
         bonusesByDate[i] = await crowdsale.profits(i);
-      } catch (Error) {}
+      } catch (Error) {
+      }
     }
 
     data['bonusesByDate'] = bonusesByDate;
 
+    return data;
+  },
+
+
+  showCrowdsaleInfoInForm: async function () {
+    // Gather info from blockchain
+    var data = await this.gatherDataFromCrowdsale();
+
     // Set actions input default values
     // Set values only once when the page is initialized
     if (crowdsaleInfoFetched === false) {
-      var numberedData = ['startTime', 'endTime', 'rate', 'softCap', 'hardCap', 'overLimit', 'minPay'];
+      var numberedData = ['startTime', 'endTime', 'rate', 'softCap', 'hardCap', 'overLimit', 'minPay', 'maxAllProfit'];
 
       $.each(numberedData, function (k, v) {
         $('[data-c-name="' + v + '"]').each(function () {
@@ -439,9 +498,31 @@ window.App = {
           $(this).val(data.bonuses[key][2].toNumber());
         }
       });
+
+      $('[data-c-name="bonusesByDateDuration"]').each(function () {
+        var key = parseInt($(this).data('bonus'), 10);
+
+        if (typeof(data.bonusesByDate[key]) !== 'undefined') {
+          $(this).val(data.bonusesByDate[key][0].toNumber());
+        }
+      });
+
+      $('[data-c-name="bonusesByDatePercent"]').each(function () {
+        var key = parseInt($(this).data('bonus'), 10);
+
+        if (typeof(data.bonusesByDate[key]) !== 'undefined') {
+          $(this).val(data.bonusesByDate[key][1].toNumber());
+        }
+      });
     }
 
     crowdsaleInfoFetched = true;
+  },
+
+
+  showCrowdsaleInfo: async function() {
+    // Gather info from blockchain
+    var data = await this.gatherDataFromCrowdsale();
 
     // Set HTML info
     $('.js-cs-total-saled-token').html(data.totalSaledToken.toNumber() / 10**18);
@@ -449,6 +530,7 @@ window.App = {
     $('.js-cs-is-initialized').html(data.isInitialized ? 'Yes' : 'No');
     $('.js-cs-is-paused-crowdsale').html(data.isPausedCrowdsale ? 'Yes' : 'No');
     $('.js-cs-can-first-mint').html(data.canFirstMint ? 'Yes' : 'No');
+    $('.js-cs-charge-bonuses').html(data.chargeBonuses ? 'Yes' : 'No');
     $('.js-cs-start-time').html(this.getDateTime(data.startTime.toNumber()));
     $('.js-cs-end-time').html(this.getDateTime(data.endTime.toNumber()));
     $('.js-cs-rate').html(data.rate.toNumber() / 10**18);
@@ -463,6 +545,8 @@ window.App = {
     $('.js-cs-has-ended').html(data.hasEnded ? 'Yes' : 'No');
     $('.js-cs-goal-reached').html(data.goalReached ? 'Yes' : 'No');
     $('.js-cs-get-profit-percent').html(data.getProfitPercent.toNumber());
+    $('.js-cs-total-supply').html(data.totalSupply.toNumber());
+    $('.js-cs-max-all-profit').html(data.maxAllProfit.toNumber());
 
     $('.js-cs-bonuses').empty();
     $('.js-cs-bonuses-by-date').empty();

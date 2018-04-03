@@ -14,11 +14,12 @@
     <ul>
         <li><a href="https://www.epochconverter.com/" target="_blank">Unix timestamp convertor</a></li>
         <li><a href="https://etherconverter.online/" target="_blank">ETH currency converter</a></li>
+        <li><a href="https://defuse.ca/big-number-calculator.htm">Large numbers calculator</a></li>
     </ul>
 </div>
 
 <div class="crowdsale-actions1">
-    <h2>Crowdsale actions (setup & configuration)</h2>
+    <h2>Manager actions</h2>
     <h4>Setup</h4>
     <i>Possible to call only before initialization and round start!</i><br><br>
     <div>
@@ -28,6 +29,7 @@
         <div>Soft cap (wei): <input type="text" class="js-cs-actions-setup-soft-cap" data-c-name="softCap"/></div>
         <div>Hard cap (wei): <input type="text" class="js-cs-actions-setup-hard-cap" data-c-name="hardCap"/></div>
         <div>Rate: <input type="text" class="js-cs-actions-setup-rate" data-c-name="rate"/></div>
+        <div>Max all profit: <input type="text" class="js-cs-actions-setup-max-all-profit" data-c-name="maxAllProfit"/></div>
         <div>Over limit (wei): <input type="text" class="js-cs-actions-setup-over-limit" data-c-name="overLimit"/></div>
         <div>Min pay (wei): <input type="text" class="js-cs-actions-setup-min-pay" data-c-name="minPay"/></div>
         <div>
@@ -39,7 +41,7 @@
             <input type="text" class="js-cs-actions-setup-procent" data-bonus="0" data-c-name="bonusesProcent"/>
         </div>
         <div>
-            Bonus 1 freeze time:
+            Bonus 1 freeze time (seconds):
             <input type="text" class="js-cs-actions-setup-freeze-time" data-bonus="0" data-c-name="bonusesFreezeTime"/>
         </div>
         <div>
@@ -51,73 +53,62 @@
             <input type="text" class="js-cs-actions-setup-procent" data-bonus="1" data-c-name="bonusesProcent"/>
         </div>
         <div>
-            Bonus 2 freeze time:
+            Bonus 2 freeze time (seconds):
             <input type="text" class="js-cs-actions-setup-freeze-time" data-bonus="1" data-c-name="bonusesFreezeTime"/>
+        </div>
+        <div>
+            Bonus by date 1 duration (days):
+            <input type="text" class="js-cs-actions-setup-bonuses-by-date-duration" data-bonus="0" data-c-name="bonusesByDateDuration"/>
+        </div>
+        <div>
+            Bonus by date 1 percent:
+            <input type="text" class="js-cs-actions-setup-bonuses-by-date-percent" data-bonus="0" data-c-name="bonusesByDatePercent"/>
+        </div>
+        <div>
+            Bonus by date 2 duration (days):
+            <input type="text" class="js-cs-actions-setup-bonuses-by-date-duration" data-bonus="1" data-c-name="bonusesByDateDuration"/>
+        </div>
+        <div>
+            Bonus by date 2 percent:
+            <input type="text" class="js-cs-actions-setup-bonuses-by-date-percent" data-bonus="1" data-c-name="bonusesByDatePercent"/>
+        </div>
+        <div>
+            Bonus by date 3 duration (days):
+            <input type="text" class="js-cs-actions-setup-bonuses-by-date-duration" data-bonus="2" data-c-name="bonusesByDateDuration"/>
+        </div>
+        <div>
+            Bonus by date 3 percent:
+            <input type="text" class="js-cs-actions-setup-bonuses-by-date-percent" data-bonus="2" data-c-name="bonusesByDatePercent"/>
+        </div>
+        <div>
+            Bonus by date 4 duration (days):
+            <input type="text" class="js-cs-actions-setup-bonuses-by-date-duration" data-bonus="3" data-c-name="bonusesByDateDuration"/>
+        </div>
+        <div>
+            Bonus by date 4 percent:
+            <input type="text" class="js-cs-actions-setup-bonuses-by-date-percent" data-bonus="3" data-c-name="bonusesByDatePercent"/>
         </div>
         <button class="js-cs-actions-setup">Setup</button>
     </div>
-    <h4>Change period</h4>
-    <i>Possible to call only before initialization and round start!</i><br><br>
+
+    <h4>Reset all wallets</h4>
     <div>
-        <div>
-            Start time: <input type="text" class="js-cs-actions-change-period-start-time" data-c-name="startTime"/>
-        </div>
-        <div>
-            End time: <input type="text" class="js-cs-actions-change-period-end-time" data-c-name="endTime"/>
-        </div>
-        <button class="js-cs-actions-change-period">Change period</button>
+        <button class="js-cs-actions-reset-all-wallets">Reset all wallets</button>
     </div>
 
-    <h4>Change targets</h4>
-    <i>Possible to call only before initialization and round start!</i><br><br>
+    <h4>Move tokens</h4>
     <div>
-        <div>Soft cap (wei): <input type="text" class="js-cs-actions-change-targets-soft-cap" data-c-name="softCap"/>
-        </div>
-        <div>Hard cap (wei): <input type="text" class="js-cs-actions-change-targets-hard-cap" data-c-name="hardCap"/>
-        </div>
-        <button class="js-cs-actions-change-targets">Change targets</button>
+        <div>Migration agent address: <input type="text" class="js-cs-actions-move-tokens-migration-agent-address"/></div>
+        <button class="js-cs-actions-move-tokens">Move tokens</button>
     </div>
 
-    <h4>Change rate</h4>
-    <i>Possible to call only before initialization and round start!</i><br><br>
+    <h4>Migrate all</h4>
+    <i>Limited only to 3 addresses max per transaction (to simplify the sandbox)</i>
     <div>
-        <div>Rate (wei): <input type="text" class="js-cs-actions-change-rate-rate" data-c-name="rate"/></div>
-        <div>
-            Over limit (wei):
-            <input type="text" class="js-cs-actions-change-rate-over-limit" data-c-name="overLimit"/>
-        </div>
-        <div>Min pay (wei): <input type="text" class="js-cs-actions-change-rate-min-pay" data-c-name="minPay"/></div>
-        <button class="js-cs-actions-change-rate">Change rate</button>
-    </div>
-
-    <h4>Set bonuses</h4>
-    <i>Possible to call only before initialization and round start!</i><br><br>
-    <div>
-        <div>
-            Bonus 1 value (wei):
-            <input type="text" class="js-cs-actions-set-bonuses-value" data-bonus="0" data-c-name="bonusesValue"/>
-        </div>
-        <div>
-            Bonus 1 procent:
-            <input type="text" class="js-cs-actions-set-bonuses-procent" data-bonus="0" data-c-name="bonusesProcent"/>
-        </div>
-        <div>
-            Bonus 1 freeze time:
-            <input type="text" class="js-cs-actions-set-bonuses-freeze-time" data-bonus="0" data-c-name="bonusesFreezeTime"/>
-        </div>
-        <div>
-            Bonus 2 value (wei):
-            <input type="text" class="js-cs-actions-set-bonuses-value" data-bonus="1" data-c-name="bonusesValue"/>
-        </div>
-        <div>
-            Bonus 2 procent:
-            <input type="text" class="js-cs-actions-set-bonuses-procent" data-bonus="1" data-c-name="bonusesProcent"/>
-        </div>
-        <div>
-            Bonus 2 freeze time:
-            <input type="text" class="js-cs-actions-set-bonuses-freeze-time" data-bonus="1" data-c-name="bonusesFreezeTime"/>
-        </div>
-        <button class="js-cs-actions-set-bonuses">Set bonuses</button>
+        <div>Holder 1 address: <input type="text" class="js-cs-actions-migrate-all-holder1-address"/></div>
+        <div>Holder 2 address: <input type="text" class="js-cs-actions-migrate-all-holder2-address"/></div>
+        <div>Holder 3 address: <input type="text" class="js-cs-actions-migrate-all-holder3-address"/></div>
+        <button class="js-cs-actions-migrate-all">Migrate all</button>
     </div>
 </div>
 
@@ -126,11 +117,8 @@
     <h4>Token Sale Finalization</h4>
     <i>Possible to call only if round has ended or goal is not reached!</i><br><br>
     <div>
-        <button class="js-cs-actions-finalize-all">Finalize all</button>
         <button class="js-cs-actions-finalize">Finalize</button>
-        <button class="js-cs-actions-finalize-1">Finalize 1</button>
         <button class="js-cs-actions-finalize-2">Finalize 2</button>
-        <button class="js-cs-actions-finalize-3">Finalize 3</button>
         <button class="js-cs-actions-distruct-vault">Distruct vault</button>
     </div>
 
@@ -140,11 +128,11 @@
         <button class="js-cs-actions-initialize">Initialize</button>
     </div>
 
-    <h4>Fast token sale</h4>
+    <h4>First mint round 0</h4>
     <i>Possible to call only in round 1 and before initialization!</i><br><br>
     <div>
-        <div>Sum (pTokens * 10^18): <input type="text" class="js-cs-actions-fast-token-sale-sum"/></div>
-        <button class="js-cs-actions-fast-token-sale">Fast token sale</button>
+        <div>Token count: <input type="text" class="js-cs-actions-first-mint-round0-count"/></div>
+        <button class="js-cs-actions-first-mint-round0-mint">Mint</button>
     </div>
 
     <h4>Pause actions</h4>
@@ -172,6 +160,38 @@
         </div>
         <button class="js-cs-actions-payments-in-other-currency">Add payment</button>
     </div>
+
+    <h4>Mass burn tokens</h4>
+    <i>Limited only to 3 addresses max per transaction (to simplify the sandbox)</i>
+    <div>
+        <table>
+            <thead>
+            <tr>
+                <th></th>
+                <th>Address</th>
+                <th>Token count * 10^18</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>Beneficiary 1</td>
+                <td><input type="text" class="js-cs-actions-mass-burn-tokens-ben1-address"/></td>
+                <td><input type="text" class="js-cs-actions-mass-burn-tokens-ben1-value"/></td>
+            </tr>
+            <tr>
+                <td>Beneficiary 2</td>
+                <td><input type="text" class="js-cs-actions-mass-burn-tokens-ben2-address"/></td>
+                <td><input type="text" class="js-cs-actions-mass-burn-tokens-ben2-value"/></td>
+            </tr>
+            <tr>
+                <td>Beneficiary 3</td>
+                <td><input type="text" class="js-cs-actions-mass-burn-tokens-ben3-address"/></td>
+                <td><input type="text" class="js-cs-actions-mass-burn-tokens-ben3-value"/></td>
+            </tr>
+            </tbody>
+        </table>
+        <button class="js-cs-actions-mass-burn-tokens">Mass burn tokens</button>
+    </div>
 </div>
 
 <div class="crowdsale-actions3">
@@ -194,13 +214,6 @@
     <i>Possible to call only in round 2 and if goal is reached!</i><br><br>
     <div>
         <button class="js-cs-actions-get-cash">Get cash for my address</button>
-    </div>
-
-    <h4>Get cash for custom address</h4>
-    <i>Possible to call only in round 2 and if goal is reached!</i><br><br>
-    <div>
-        <div>Address: <input type="text" class="js-cs-actions-get-cash-custom-address"/></div>
-        <button class="js-cs-actions-get-cash-custom">Get cash for custom address</button>
     </div>
 
     <h4>Buy tokens</h4>

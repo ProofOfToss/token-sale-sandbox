@@ -78,3 +78,4 @@ Keep in mind following things:
 * crowdsale info is updated each second dynamically
 * if you don't see expected behaviour after certain actions, try to refresh the page and only than report an error
 * it is also better to refresh a page when an account in MetaMask is changed
+* always keep the browser console opened because there is a lot of useful debug information (such as events or parameters being sent within transactions)
