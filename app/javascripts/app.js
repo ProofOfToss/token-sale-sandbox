@@ -157,7 +157,7 @@ window.App = {
 
     $('.' + selectorPrefix + '-value').each(function () {
       if ($(this).val() != '') {
-        bonuses.value[parseInt($(this).data('bonus'), 10)] = parseInt($(this).val(), 10);
+        bonuses.value[parseInt($(this).data('bonus'), 10)] = parseInt($(this).val(), 10) * 10**18;
       }
     });
 
@@ -208,12 +208,12 @@ window.App = {
       var bonusesByDate = this.collectBonusByDateData('js-cs-actions-setup-bonuses-by-date');
       var startTime = parseInt($('.js-cs-actions-setup-start-time').val(), 10);
       var endTime = parseInt($('.js-cs-actions-setup-end-time').val(), 10);
-      var softCap = parseInt($('.js-cs-actions-setup-soft-cap').val(), 10);
-      var hardCap = parseInt($('.js-cs-actions-setup-hard-cap').val(), 10);
-      var rate = parseInt($('.js-cs-actions-setup-rate').val(), 10);
+      var softCap = parseInt($('.js-cs-actions-setup-soft-cap').val(), 10) * 10**18;
+      var hardCap = parseInt($('.js-cs-actions-setup-hard-cap').val(), 10) * 10**18;
+      var rate = parseInt($('.js-cs-actions-setup-rate').val(), 10) * 10**18;
       var maxAllProfit = parseInt($('.js-cs-actions-setup-max-all-profit').val(), 10);
-      var overLimit = parseInt($('.js-cs-actions-setup-over-limit').val(), 10);
-      var minPay = parseInt($('.js-cs-actions-setup-min-pay').val(), 10);
+      var overLimit = parseInt($('.js-cs-actions-setup-over-limit').val(), 10) * 10**18;
+      var minPay = parseInt($('.js-cs-actions-setup-min-pay').val(), 10) * 10**18;
 
       console.log(
         startTime, endTime, softCap, hardCap,
@@ -271,7 +271,7 @@ window.App = {
     });
 
     $('.js-cs-actions-first-mint-round0-mint').click(function () {
-      var count = parseInt($('.js-cs-actions-first-mint-round0-count').val(), 10);
+      var count = parseInt($('.js-cs-actions-first-mint-round0-count').val(), 10) * 10**18;
 
       console.log(count);
       crowdsale.firstMintRound0(count, from);
@@ -320,17 +320,17 @@ window.App = {
 
       if (addr1.length > 0 && value1.length > 0) {
         beneficiaries.push(addr1);
-        values.push(parseInt(value1, 10));
+        values.push(parseInt(value1, 10) * 10**18);
       }
 
       if (addr2.length > 0 && value2.length > 0) {
         beneficiaries.push(addr2);
-        values.push(parseInt(value2, 10));
+        values.push(parseInt(value2, 10) * 10**18);
       }
 
       if (addr3.length > 0 && value3.length > 0) {
         beneficiaries.push(addr3);
-        values.push(parseInt(value3, 10));
+        values.push(parseInt(value3, 10) * 10**18);
       }
 
       console.log(beneficiaries, values, from);
@@ -354,8 +354,8 @@ window.App = {
     });
 
     $('.js-cs-actions-payments-in-other-currency').click(function () {
-      var pTokenAmount = parseInt($('.js-cs-actions-payments-in-other-currency-pToken-amount').val(), 10);
-      var nonEthSum = parseInt($('.js-cs-actions-payments-in-other-currency-non-eth-sum').val(), 10);
+      var pTokenAmount = parseInt($('.js-cs-actions-payments-in-other-currency-pToken-amount').val(), 10) * 10**18;
+      var nonEthSum = parseInt($('.js-cs-actions-payments-in-other-currency-non-eth-sum').val(), 10) * 10**18;
 
       console.log(pTokenAmount, nonEthSum);
       crowdsale.paymentsInOtherCurrency(pTokenAmount, nonEthSum, from);
@@ -619,10 +619,17 @@ window.App = {
     // Set values only once when the page is initialized
     if (crowdsaleInfoFetched === false) {
       var numberedData = ['startTime', 'endTime', 'rate', 'softCap', 'hardCap', 'overLimit', 'minPay', 'maxAllProfit'];
+      var quintillions = ['rate', 'softCap', 'hardCap', 'overLimit', 'minPay'];
 
       $.each(numberedData, function (k, v) {
         $('[data-c-name="' + v + '"]').each(function () {
-          $(this).val(data[v].toNumber());
+          var val = data[v].toNumber();
+
+          if (quintillions.indexOf(v) !== -1) {
+            val = val / 10**18;
+          }
+
+          $(this).val(val);
         });
       });
 
@@ -630,7 +637,7 @@ window.App = {
         var key = parseInt($(this).data('bonus'), 10);
 
         if (typeof(data.bonuses[key]) !== 'undefined') {
-          $(this).val(data.bonuses[key][0].toNumber());
+          $(this).val(data.bonuses[key][0].toNumber() / 10**18);
         }
       });
 
@@ -734,7 +741,7 @@ window.App = {
       let $balanceElement = $('#balance');
 
       if ($balanceElement.length > 0) {
-        $balanceElement.html(r.toNumber());
+        $balanceElement.html(r.toNumber() / 10**18);
       }
     });
 
