@@ -6,8 +6,8 @@ import { default as Web3} from 'web3';
 import { default as contract } from 'truffle-contract'
 
 // Import our contract artifacts and turn them into usable abstractions.
-import toss_crowdsale_artifacts from '../../build/contracts/TossCrowdsale.json'
-import toss_token_artifacts from '../../build/contracts/TossToken.json'
+import toss_crowdsale_artifacts from '../../build/contracts/Crowdsale.json'
+import toss_token_artifacts from '../../build/contracts/Token.json'
 
 // TossToken is our usable abstraction, which we'll use through the code below.
 var TossCrowdsale = contract(toss_crowdsale_artifacts);
@@ -22,14 +22,16 @@ var crowdsaleInfoFetched = false;
 var customWeb3;
 
 window.App = {
-  start: function() {
+  start: async function() {
     var self = this;
 
     // Bootstrap the TossToken abstraction for Use.
     TossCrowdsale.setProvider(web3.currentProvider);
     TossToken.setProvider(web3.currentProvider);
 
-    // Get the initial account balance so it can be displayed.
+    const crowdsale = await TossCrowdsale.deployed();
+    const tokenAddress = await crowdsale.token();
+
     web3.eth.getAccounts(function(err, accs) {
       if (err != null) {
         alert("There was an error fetching your accounts.");
@@ -44,12 +46,29 @@ window.App = {
       accounts = accs;
       account = accounts[0];
 
-      self.refreshBalance();
-      self.listenToActions();
-      self.listenToPurchaseEvents();
+      if (tokenAddress === '0x0000000000000000000000000000000000000000') {
+        alert('It seems you didn\'t yet create a Token contract. Proceed to controls.html page and create via either functions initialize(), setup() or firstMintRound0() AND REFRESH THIS PAGE.');
 
-      setInterval(() => self.showCrowdsaleInfo(), 1000);
+        if (window.GLOBAL_IS_CONTROLS_PAGE === true) {
+          self._init();
+        }
+      } else {
+        self._init();
+      }
     });
+  },
+
+
+  _init: function () {
+    if (window.GLOBAL_IS_INDEX_PAGE === true) {
+      this.refreshBalance();
+      this.listenToPurchaseEvents();
+      this.listenToTokenActions();
+
+      setInterval(() => this.showCrowdsaleInfo(), 1000);
+    } else if (window.GLOBAL_IS_CONTROLS_PAGE === true) {
+      this.listenToCrowdsaleActions();
+    }
   },
 
 
@@ -109,7 +128,7 @@ window.App = {
   },
 
 
-  listenToActions: async function () {
+  listenToCrowdsaleActions: async function () {
     var crowdsale = await TossCrowdsale.deployed();
     var from = {from: account};
 
@@ -265,16 +284,24 @@ window.App = {
       console.log(benificiary, {from: account, value: value});
       crowdsale.buyTokens(benificiary, {from: account, value: value});
     });
+  },
 
+
+  listenToTokenActions: async function () {
     // Send TOSS
-    var toss = await TossToken.deployed();
+    const crowdsale = await TossCrowdsale.deployed();
+    const tokenAddress = await crowdsale.token();
+    const toss = web3.eth.contract(TossToken.abi).at(tokenAddress);
 
     $('.js-send-toss').click(function () {
       var address = $('.js-send-toss-address').val();
       var amount = parseInt($('.js-send-toss-amount').val(), 10);
 
       console.log(address, amount);
-      toss.transfer(address, amount, from);
+
+      toss.transfer(address, amount, {from: address}, function (e ,r) {
+        console.log(e, r);
+      });
     });
   },
 
@@ -405,13 +432,20 @@ window.App = {
 
 
   refreshBalance: async function() {
-    var toss = await TossToken.deployed();
-    var balance = await toss.balanceOf.call(account, {from: account});
-    var $balanceElement = $('#balance');
+    const crowdsale = await TossCrowdsale.deployed();
+    const tokenAddress = await crowdsale.token();
+    const toss = web3.eth.contract(TossToken.abi).at(tokenAddress);
 
-    if ($balanceElement.length > 0) {
-      $balanceElement.html(balance.toNumber());
-    }
+    const balance = await toss.balanceOf(account, {from: account}, function (e, r) {
+      console.log(e, r);
+
+      let $balanceElement = $('#balance');
+
+      if ($balanceElement.length > 0) {
+        $balanceElement.html(r.toNumber());
+      }
+    });
+
   }
 };
 
