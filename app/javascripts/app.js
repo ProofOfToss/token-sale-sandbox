@@ -157,7 +157,7 @@ window.App = {
 
     $('.' + selectorPrefix + '-value').each(function () {
       if ($(this).val() != '') {
-        bonuses.value[parseInt($(this).data('bonus'), 10)] = parseInt($(this).val(), 10) * 10**18;
+        bonuses.value[parseInt($(this).data('bonus'), 10)] = parseInt($(this).val(), 10);
       }
     });
 
