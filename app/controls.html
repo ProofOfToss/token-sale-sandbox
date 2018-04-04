@@ -26,14 +26,14 @@
         <div>Start time: <input type="text" class="js-cs-actions-setup-start-time" data-c-name="startTime"/>
         </div>
         <div>End time: <input type="text" class="js-cs-actions-setup-end-time" data-c-name="endTime"/></div>
-        <div>Soft cap (ETH): <input type="text" class="js-cs-actions-setup-soft-cap" data-c-name="softCap"/></div>
-        <div>Hard cap (ETH): <input type="text" class="js-cs-actions-setup-hard-cap" data-c-name="hardCap"/></div>
-        <div>Rate: <input type="text" class="js-cs-actions-setup-rate" data-c-name="rate"/></div>
+        <div>Soft cap (ETH * 10^18): <input type="text" class="js-cs-actions-setup-soft-cap" data-c-name="softCap"/></div>
+        <div>Hard cap (ETH * 10^18): <input type="text" class="js-cs-actions-setup-hard-cap" data-c-name="hardCap"/></div>
+        <div>Rate * 10^18: <input type="text" class="js-cs-actions-setup-rate" data-c-name="rate"/></div>
         <div>Max all profit: <input type="text" class="js-cs-actions-setup-max-all-profit" data-c-name="maxAllProfit"/></div>
-        <div>Over limit (ETH): <input type="text" class="js-cs-actions-setup-over-limit" data-c-name="overLimit"/></div>
-        <div>Min pay (ETH): <input type="text" class="js-cs-actions-setup-min-pay" data-c-name="minPay"/></div>
+        <div>Over limit (ETH * 10^18): <input type="text" class="js-cs-actions-setup-over-limit" data-c-name="overLimit"/></div>
+        <div>Min pay (ETH * 10^18): <input type="text" class="js-cs-actions-setup-min-pay" data-c-name="minPay"/></div>
         <div>
-            Bonus 1 value (ETH):
+            Bonus 1 value (ETH * 10^18):
             <input type="text" class="js-cs-actions-setup-value" data-bonus="0" data-c-name="bonusesValue"/>
         </div>
         <div>
@@ -45,7 +45,7 @@
             <input type="text" class="js-cs-actions-setup-freeze-time" data-bonus="0" data-c-name="bonusesFreezeTime"/>
         </div>
         <div>
-            Bonus 2 value (ETH):
+            Bonus 2 value (ETH * 10^18):
             <input type="text" class="js-cs-actions-setup-value" data-bonus="1" data-c-name="bonusesValue"/>
         </div>
         <div>
@@ -154,9 +154,9 @@
     <h4>Payments in other currency</h4>
     <i>Possible to call only in round 1 and 2 and after initialization!</i><br><br>
     <div>
-        <div>Amount: <input type="text" class="js-cs-actions-payments-in-other-currency-pToken-amount"/>
+        <div>Amount * 10^18: <input type="text" class="js-cs-actions-payments-in-other-currency-pToken-amount"/>
         </div>
-        <div>Non-ETH sum: <input type="text" class="js-cs-actions-payments-in-other-currency-non-eth-sum"/>
+        <div>Non-ETH sum * 10^18: <input type="text" class="js-cs-actions-payments-in-other-currency-non-eth-sum"/>
         </div>
         <button class="js-cs-actions-payments-in-other-currency">Add payment</button>
     </div>
@@ -169,7 +169,7 @@
             <tr>
                 <th></th>
                 <th>Address</th>
-                <th>Token count</th>
+                <th>Token count * 10^18</th>
             </tr>
             </thead>
             <tbody>
@@ -214,7 +214,7 @@
     <i>Possible to call only in active round 1 and 2!</i><br><br>
     <div>
         <div>Beneficiary: <input type="text" class="js-cs-actions-buy-tokens-benificiary"/></div>
-        <div>Value (ETH): <input type="text" class="js-cs-actions-buy-tokens-value"/></div>
+        <div>Value (ETH * 10^18): <input type="text" class="js-cs-actions-buy-tokens-value"/></div>
         <button class="js-cs-actions-buy-tokens">Buy tokens</button>
     </div>
 </div>

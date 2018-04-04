@@ -208,12 +208,12 @@ window.App = {
       var bonusesByDate = this.collectBonusByDateData('js-cs-actions-setup-bonuses-by-date');
       var startTime = parseInt($('.js-cs-actions-setup-start-time').val(), 10);
       var endTime = parseInt($('.js-cs-actions-setup-end-time').val(), 10);
-      var softCap = parseInt($('.js-cs-actions-setup-soft-cap').val(), 10) * 10**18;
-      var hardCap = parseInt($('.js-cs-actions-setup-hard-cap').val(), 10) * 10**18;
-      var rate = parseInt($('.js-cs-actions-setup-rate').val(), 10) * 10**18;
+      var softCap = parseInt($('.js-cs-actions-setup-soft-cap').val(), 10);
+      var hardCap = parseInt($('.js-cs-actions-setup-hard-cap').val(), 10);
+      var rate = parseInt($('.js-cs-actions-setup-rate').val(), 10);
       var maxAllProfit = parseInt($('.js-cs-actions-setup-max-all-profit').val(), 10);
-      var overLimit = parseInt($('.js-cs-actions-setup-over-limit').val(), 10) * 10**18;
-      var minPay = parseInt($('.js-cs-actions-setup-min-pay').val(), 10) * 10**18;
+      var overLimit = parseInt($('.js-cs-actions-setup-over-limit').val(), 10);
+      var minPay = parseInt($('.js-cs-actions-setup-min-pay').val(), 10);
 
       console.log(
         startTime, endTime, softCap, hardCap,
@@ -267,7 +267,7 @@ window.App = {
     });
 
     $('.js-cs-actions-first-mint-round0-mint').click(function () {
-      var count = parseInt($('.js-cs-actions-first-mint-round0-count').val(), 10) * 10**18;
+      var count = parseInt($('.js-cs-actions-first-mint-round0-count').val(), 10);
 
       console.log(count);
       crowdsale.firstMintRound0(count, from);
@@ -316,17 +316,17 @@ window.App = {
 
       if (addr1.length > 0 && value1.length > 0) {
         beneficiaries.push(addr1);
-        values.push(parseInt(value1, 10) * 10**18);
+        values.push(parseInt(value1, 10));
       }
 
       if (addr2.length > 0 && value2.length > 0) {
         beneficiaries.push(addr2);
-        values.push(parseInt(value2, 10) * 10**18);
+        values.push(parseInt(value2, 10));
       }
 
       if (addr3.length > 0 && value3.length > 0) {
         beneficiaries.push(addr3);
-        values.push(parseInt(value3, 10) * 10**18);
+        values.push(parseInt(value3, 10));
       }
 
       console.log(beneficiaries, values, from);
@@ -350,8 +350,8 @@ window.App = {
     });
 
     $('.js-cs-actions-payments-in-other-currency').click(function () {
-      var pTokenAmount = parseInt($('.js-cs-actions-payments-in-other-currency-pToken-amount').val(), 10) * 10**18;
-      var nonEthSum = parseInt($('.js-cs-actions-payments-in-other-currency-non-eth-sum').val(), 10) * 10**18;
+      var pTokenAmount = parseInt($('.js-cs-actions-payments-in-other-currency-pToken-amount').val(), 10);
+      var nonEthSum = parseInt($('.js-cs-actions-payments-in-other-currency-non-eth-sum').val(), 10);
 
       console.log(pTokenAmount, nonEthSum);
       crowdsale.paymentsInOtherCurrency(pTokenAmount, nonEthSum, from);
@@ -384,7 +384,7 @@ window.App = {
 
     $('.js-t-actions-transfer').click(function () {
       var address = $('.js-t-actions-transfer-address').val();
-      var amount = parseInt($('.js-t-actions-transfer-amount').val(), 10) * 10**18;
+      var amount = parseInt($('.js-t-actions-transfer-amount').val(), 10);
 
       console.log(address, amount, from);
 
@@ -396,7 +396,7 @@ window.App = {
     $('.js-t-actions-transfer-from').click(function () {
       var addressFrom = $('.js-t-actions-transfer-from-from-address').val();
       var addressTo = $('.js-t-actions-transfer-from-to-address').val();
-      var amount = parseInt($('.js-t-actions-transfer-from-amount').val(), 10) * 10**18;
+      var amount = parseInt($('.js-t-actions-transfer-from-amount').val(), 10);
 
       console.log(addressFrom, addressTo, amount, from);
 
@@ -407,7 +407,7 @@ window.App = {
 
     $('.js-t-actions-approve').click(function () {
       var address = $('.js-t-actions-approve-address').val();
-      var amount = parseInt($('.js-t-actions-approve-amount').val(), 10) * 10**18;
+      var amount = parseInt($('.js-t-actions-approve-amount').val(), 10);
 
       console.log(address, amount, from);
 
@@ -418,7 +418,7 @@ window.App = {
 
     $('.js-t-actions-increase-approval').click(function () {
       var address = $('.js-t-actions-increase-approval-address').val();
-      var amount = parseInt($('.js-t-actions-increase-approval-amount').val(), 10) * 10**18;
+      var amount = parseInt($('.js-t-actions-increase-approval-amount').val(), 10);
 
       console.log(address, amount, from);
 
@@ -429,7 +429,7 @@ window.App = {
 
     $('.js-t-actions-decrease-approval').click(function () {
       var address = $('.js-t-actions-decrease-approval-address').val();
-      var amount = parseInt($('.js-t-actions-decrease-approval-amount').val(), 10) * 10**18;
+      var amount = parseInt($('.js-t-actions-decrease-approval-amount').val(), 10);
 
       console.log(address, amount, from);
 
@@ -477,7 +477,7 @@ window.App = {
 
     $('.js-t-js-t-actions-transfer-and-freeze-transfer').click(function () {
       var address = $('.js-t-actions-transfer-and-freeze-address').val();
-      var amount = parseInt($('.js-t-actions-transfer-and-freeze-amount').val(), 10) * 10**18;
+      var amount = parseInt($('.js-t-actions-transfer-and-freeze-amount').val(), 10);
       var when = parseInt($('.js-t-actions-transfer-and-freeze-when').val(), 10);
 
       console.log(address, amount, when, from);
@@ -489,7 +489,7 @@ window.App = {
 
     $('.js-t-actions-freeze-tokens').click(function () {
       var address = $('.js-t-actions-freeze-tokens-address').val();
-      var amount = parseInt($('.js-t-actions-freeze-tokens-amount').val(), 10) * 10**18;
+      var amount = parseInt($('.js-t-actions-freeze-tokens-amount').val(), 10);
       var when = parseInt($('.js-t-actions-freeze-tokens-when').val(), 10);
 
       console.log(address, amount, when, from);
@@ -518,19 +518,19 @@ window.App = {
 
       if (addr1 && amount1 && when1) {
         beneficiaries.push(addr1);
-        amounts.push(parseInt(amount1, 10) * 10**18);
+        amounts.push(parseInt(amount1, 10));
         whens.push(parseInt(when1, 10));
       }
 
       if (addr2 && amount2 && when2) {
         beneficiaries.push(addr2);
-        amounts.push(parseInt(amount2, 10) * 10**18);
+        amounts.push(parseInt(amount2, 10));
         whens.push(parseInt(when2, 10));
       }
 
       if (addr3 && amount3 && when3) {
         beneficiaries.push(addr3);
-        amounts.push(parseInt(amount3, 10) * 10**18);
+        amounts.push(parseInt(amount3, 10));
         whens.push(parseInt(when3, 10));
       }
 
@@ -615,15 +615,10 @@ window.App = {
     // Set values only once when the page is initialized
     if (crowdsaleInfoFetched === false) {
       var numberedData = ['startTime', 'endTime', 'rate', 'softCap', 'hardCap', 'overLimit', 'minPay', 'maxAllProfit'];
-      var quintillions = ['rate', 'softCap', 'hardCap', 'overLimit', 'minPay'];
 
       $.each(numberedData, function (k, v) {
         $('[data-c-name="' + v + '"]').each(function () {
           var val = data[v].toNumber();
-
-          if (quintillions.indexOf(v) !== -1) {
-            val = val / 10**18;
-          }
 
           $(this).val(val);
         });
@@ -633,7 +628,7 @@ window.App = {
         var key = parseInt($(this).data('bonus'), 10);
 
         if (typeof(data.bonuses[key]) !== 'undefined') {
-          $(this).val(data.bonuses[key][0].toNumber() / 10**18);
+          $(this).val(data.bonuses[key][0].toNumber());
         }
       });
 
@@ -657,7 +652,7 @@ window.App = {
         var key = parseInt($(this).data('bonus'), 10);
 
         if (typeof(data.bonusesByDate[key]) !== 'undefined') {
-          $(this).val(data.bonusesByDate[key][0].toNumber());
+          $(this).val(data.bonusesByDate[key][1].toNumber());
         }
       });
 
@@ -665,7 +660,7 @@ window.App = {
         var key = parseInt($(this).data('bonus'), 10);
 
         if (typeof(data.bonusesByDate[key]) !== 'undefined') {
-          $(this).val(data.bonusesByDate[key][1].toNumber());
+          $(this).val(data.bonusesByDate[key][0].toNumber());
         }
       });
     }
