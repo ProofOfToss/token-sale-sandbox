@@ -81,6 +81,7 @@ window.App = {
     // create a new web3 objects, because the one which comes from MetaMask has problems with events listening
     customWeb3 = new Web3(web3.currentProvider);
 
+    var self = this;
     var TossCrowdsale2 = contract(toss_crowdsale_artifacts);
     TossCrowdsale2.setProvider(customWeb3.currentProvider);
 
@@ -91,13 +92,13 @@ window.App = {
     tokenPurchaseEvent.watch(function(error, result) {
       if ($('[data-tx-id="' + result.transactionHash + '"]').length == 0) {
         web3.eth.getBlock(result.blockNumber, function (e, r) {
-          let e = result.args;
+          let ev = result.args;
           let html = '<tr data-tx-id="' + result.transactionHash + '">';
           html += '<td>' + self.getDateTime(r.timestamp) + '</td>';
-          html += '<td>' + e.purchaser + '</td>';
-          html += '<td>' + e.beneficiary + '</td>';
-          html += '<td>' + e.value.toNumber() / 10**18  + '</td>';
-          html += '<td>' + e.amount.toNumber() / 10**18 + '</td>';
+          html += '<td>' + ev.purchaser + '</td>';
+          html += '<td>' + ev.beneficiary + '</td>';
+          html += '<td>' + ev.value.toNumber() / 10**18  + '</td>';
+          html += '<td>' + ev.amount.toNumber() / 10**18 + '</td>';
           html += '</tr>';
 
           $purchaseContainer.append($(html));
@@ -694,7 +695,7 @@ window.App = {
     $('.js-cs-has-ended').html(data.hasEnded ? 'Yes' : 'No');
     $('.js-cs-goal-reached').html(data.goalReached ? 'Yes' : 'No');
     $('.js-cs-get-profit-percent').html(data.getProfitPercent.toNumber());
-    $('.js-cs-total-supply').html(data.totalSupply.toNumber());
+    $('.js-cs-total-supply').html(data.totalSupply.toNumber() / 10**18);
     $('.js-cs-max-all-profit').html(data.maxAllProfit.toNumber());
 
     $('.js-cs-bonuses').empty();
