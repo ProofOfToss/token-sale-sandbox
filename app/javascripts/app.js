@@ -32,6 +32,12 @@ window.App = {
     const crowdsale = await TossCrowdsale.deployed();
     const tokenAddress = await crowdsale.token();
 
+    console.log('CROWDSALE ADDRESS: ' + crowdsale.address);
+
+    var data = await this.gatherDataFromCrowdsale();
+
+    console.log(data);
+
     web3.eth.getAccounts(function(err, accs) {
       if (err != null) {
         alert("There was an error fetching your accounts.");
@@ -53,6 +59,7 @@ window.App = {
           self._init();
         }
       } else {
+        console.log('TOKEN ADDRESS: ' + tokenAddress);
         self._init();
       }
     });
@@ -119,7 +126,12 @@ window.App = {
 
     const crowdsale = await TossCrowdsale2.deployed();
     const tokenAddress = await crowdsale.token();
-    const toss = await web3.eth.contract(TossToken.abi).at(tokenAddress);
+    const tokenDeployed = tokenAddress !== '0x0000000000000000000000000000000000000000';
+    let toss = null;
+
+    if (tokenDeployed) {
+      toss = await web3.eth.contract(TossToken.abi).at(tokenAddress);
+    }
 
     const events = [
       ['Crowdsale', 'TokenPurchase'],
@@ -137,6 +149,10 @@ window.App = {
     ];
 
     for (let i = 0; i < events.length; i++) {
+      if (events[i][0] === 'Token' && !tokenDeployed) {
+        continue;
+      }
+
       const c = events[i][0] === 'Crowdsale' ? crowdsale : toss;
       const e = c[events[i][1]]({}, {fromBlock: 0, toBlock: 'latest'});
 
@@ -547,11 +563,11 @@ window.App = {
   getDateTime: function (timestamp) {
     var date = new Date(timestamp * 1000);
 
-    return date.toLocaleString();
+    return date.toLocaleString('en-GB', {timeZone: 'UTC'}) + ' (UTC)';
   },
 
 
-  gatherDataFromCrowdsale: async function () {
+  gatherDataFromCrowdsale: async function (getTotalSupply) {
     var crowdsale = await TossCrowdsale.deployed();
 
     // Gather info from blockchain
@@ -576,8 +592,10 @@ window.App = {
       hasEnded: await crowdsale.hasEnded(),
       goalReached: await crowdsale.goalReached(),
       getProfitPercent: await crowdsale.getProfitPercent(),
-      totalSupply: await crowdsale.totalSupply(),
-      maxAllProfit: await crowdsale.maxAllProfit()
+      totalSupply: getTotalSupply === true ? await crowdsale.totalSupply() : 0,
+      maxAllProfit: await crowdsale.maxAllProfit(),
+      currentTime: await crowdsale.getCurrentTime(),
+      endTime2: await crowdsale.getEndTime2(),
     };
 
     var bonuses = [];
@@ -672,7 +690,7 @@ window.App = {
 
   showCrowdsaleInfo: async function() {
     // Gather info from blockchain
-    var data = await this.gatherDataFromCrowdsale();
+    var data = await this.gatherDataFromCrowdsale(true);
 
     // Set HTML info
     $('.js-cs-total-saled-token').html(data.totalSaledToken.toNumber() / 10**18);
