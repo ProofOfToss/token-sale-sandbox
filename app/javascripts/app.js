@@ -220,6 +220,19 @@ window.App = {
     var crowdsale = await TossCrowdsale.deployed();
     var from = {from: account};
 
+    $('.js-cs-actions-setup-set-default-actions').click(() => {
+      $('.js-cs-actions-setup-soft-cap').val('8500000000000000000000');
+      $('.js-cs-actions-setup-hard-cap').val('71500000000000000000000');
+      $('.js-cs-actions-setup-rate').val('10000000000000000000000');
+      $('.js-cs-actions-setup-over-limit').val('20000000000000000000');
+      $('.js-cs-actions-setup-min-pay').val('71000000000000000');
+      $('.js-cs-actions-setup-value[data-bonus="0"]').val('71000000000000000000');
+      $('.js-cs-actions-setup-procent[data-bonus="0"]').val('30');
+      $('.js-cs-actions-setup-freeze-time[data-bonus="0"]').val('600');
+      $('.js-cs-actions-setup-bonuses-by-date-duration[data-bonus="0"]').val('86400');
+      $('.js-cs-actions-setup-bonuses-by-date-percent[data-bonus="0"]').val('15');
+    });
+
     $('.js-cs-actions-setup').click(() => {
       var bonuses = this.collectBonusData('js-cs-actions-setup');
       var bonusesByDate = this.collectBonusByDateData('js-cs-actions-setup-bonuses-by-date');
@@ -594,8 +607,8 @@ window.App = {
       getProfitPercent: await crowdsale.getProfitPercent(),
       totalSupply: getTotalSupply === true ? await crowdsale.totalSupply() : 0,
       maxAllProfit: await crowdsale.maxAllProfit(),
-      currentTime: await crowdsale.getCurrentTime(),
-      endTime2: await crowdsale.getEndTime2(),
+      //currentTime: await crowdsale.getCurrentTime(),
+      //endTime2: await crowdsale.getEndTime2(),
     };
 
     var bonuses = [];
