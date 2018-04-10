@@ -222,6 +222,16 @@ window.App = {
     var crowdsale = await TossCrowdsale.deployed();
     var from = {from: account};
 
+    $('.js-cs-actions-check-wallet-address').click(async () => {
+      const roleNumber = parseInt($('.js-cs-actions-check-wallet-address-role-number').val(), 10);
+
+      console.log(roleNumber);
+
+      var w = await crowdsale.wallets(roleNumber);
+
+      console.log(w);
+    });
+
     $('.js-cs-actions-setup-set-default-actions').click(() => {
       $('.js-cs-actions-setup-soft-cap').val('8500000000000000000000');
       $('.js-cs-actions-setup-hard-cap').val('71500000000000000000000');
