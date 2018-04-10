@@ -31,6 +31,7 @@ window.App = {
 
     const crowdsale = await TossCrowdsale.deployed();
     const tokenAddress = await crowdsale.token();
+    const allocationAddress = await crowdsale.allocation();
 
     console.log('CROWDSALE ADDRESS: ' + crowdsale.address);
 
@@ -60,6 +61,7 @@ window.App = {
         }
       } else {
         console.log('TOKEN ADDRESS: ' + tokenAddress);
+        console.log('ALLOCATION ADDRESS: ' + allocationAddress);
         self._init();
       }
     });
@@ -474,13 +476,23 @@ window.App = {
       });
     });
 
+    $('.js-t-actions-check-balance').click(function () {
+      var address = $('.js-t-actions-check-balance-address').val();
+
+      console.log(address, from);
+
+      toss.balanceOf(address, from, function (e ,r) {
+        console.log(e, r.toNumber() / 10**18);
+      });
+    });
+
     $('.js-t-actions-check-frozen-token-balance').click(function () {
       var address = $('.js-t-actions-check-frozen-token-balance-address').val();
 
       console.log(address, from);
 
       toss.freezedTokenOf(address, from, function (e ,r) {
-        console.log(e, r.toNumber());
+        console.log(e, r.toNumber() / 10**18);
       });
     });
 
