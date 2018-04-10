@@ -301,6 +301,7 @@ window.App = {
     });
 
     $('.js-cs-actions-claim-refund').click(function () {
+      console.log(from);
       crowdsale.claimRefund(from);
     });
 
