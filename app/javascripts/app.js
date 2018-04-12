@@ -8,10 +8,12 @@ import { default as contract } from 'truffle-contract'
 // Import our contract artifacts and turn them into usable abstractions.
 import toss_crowdsale_artifacts from '../../build/contracts/Crowdsale.json'
 import toss_token_artifacts from '../../build/contracts/Token.json'
+import toss_allocation_artifacts from '../../build/contracts/AllocationTOSS.json'
 
 // TossToken is our usable abstraction, which we'll use through the code below.
 var TossCrowdsale = contract(toss_crowdsale_artifacts);
 var TossToken = contract(toss_token_artifacts);
+var AllocationToss = contract(toss_allocation_artifacts);
 
 // The following code is simple to show off interacting with your contracts.
 // As your needs grow you will likely need to change its form and structure.
@@ -414,6 +416,16 @@ window.App = {
 
       console.log(benificiary, {from: account, value: value});
       crowdsale.buyTokens(benificiary, {from: account, value: value});
+    });
+
+    $('.js-cs-actions-unlock-allocation').click(async function () {
+      var address = $('.js-cs-actions-unlock-allocation-address').val();
+
+      const allocationAddress = await crowdsale.allocation();
+      const allocation = await web3.eth.contract(AllocationToss.abi).at(allocationAddress);
+
+      console.log(address);
+      allocation.unlockFor(address, from);
     });
   },
 
