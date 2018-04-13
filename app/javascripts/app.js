@@ -73,11 +73,15 @@ window.App = {
   _init: function () {
     this.listenToOtherEvents();
 
+    if ($('.js-my-address').length > 0) {
+      $('.js-my-address').val(account);
+    }
+
     if (window.GLOBAL_IS_INDEX_PAGE === true) {
       this.refreshBalance();
       this.listenToPurchaseEvents();
 
-      setInterval(() => this.showCrowdsaleInfo(), 1000);
+      /*setInterval(() =>*/ this.showCrowdsaleInfo()/*, 1000)*/;
     } else if (window.GLOBAL_IS_CONTROLS_PAGE === true) {
       this.listenToCrowdsaleActions();
       this.showCrowdsaleInfoInForm();
@@ -425,7 +429,9 @@ window.App = {
       const allocation = await web3.eth.contract(AllocationToss.abi).at(allocationAddress);
 
       console.log(address);
-      allocation.unlockFor(address, from);
+      allocation.unlockFor(address, from, function (e, r) {
+        console.log(e, r);
+      });
     });
   },
 
@@ -540,7 +546,7 @@ window.App = {
       });
     });
 
-    $('.js-t-js-t-actions-transfer-and-freeze-transfer').click(function () {
+    $('.js-t-actions-transfer-and-freeze').click(function () {
       var address = $('.js-t-actions-transfer-and-freeze-address').val();
       var amount = parseInt($('.js-t-actions-transfer-and-freeze-amount').val(), 10);
       var when = parseInt($('.js-t-actions-transfer-and-freeze-when').val(), 10);

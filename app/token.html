@@ -29,7 +29,7 @@
                 <label>Amount * 10^18:</label>
                 <input type="text" class="js-t-actions-transfer-amount" placeholder="e.g., 95"/>
                 <br><label>To Address:</label>
-                <input type="text" class="js-t-actions-transfer-address" placeholder="e.g., 0x93e66d9baea28c17d9fc393b53e3fbdd76899dae"/>
+                <input type="text" class="js-t-actions-transfer-address js-my-address" placeholder="e.g., 0x93e66d9baea28c17d9fc393b53e3fbdd76899dae"/>
                 <br>
                 <button class="js-t-actions-transfer">Send Toss</button>
             </td>
@@ -49,7 +49,7 @@
                 <label>Amount * 10^18:</label>
                 <input type="text" class="js-t-actions-approve-amount" placeholder="e.g., 95"/>
                 <br><label>Spender Address:</label>
-                <input type="text" class="js-t-actions-approve-address" placeholder="e.g., 0x93e66d9baea28c17d9fc393b53e3fbdd76899dae"/>
+                <input type="text" class="js-t-actions-approve-address js-my-address" placeholder="e.g., 0x93e66d9baea28c17d9fc393b53e3fbdd76899dae"/>
                 <br>
                 <button class="js-t-actions-approve">Approve</button>
             </td>
@@ -74,7 +74,7 @@
             <td>
                 <h4>Check allowance</h4>
                 <br><label>Owner Address:</label>
-                <input type="text" class="js-t-actions-allowance-owner-address" placeholder="e.g., 0x93e66d9baea28c17d9fc393b53e3fbdd76899dae"/>
+                <input type="text" class="js-t-actions-allowance-owner-address js-my-address" placeholder="e.g., 0x93e66d9baea28c17d9fc393b53e3fbdd76899dae"/>
                 <br><label>Spender Address:</label>
                 <input type="text" class="js-t-actions-allowance-spender-address" placeholder="e.g., 0x93e66d9baea28c17d9fc393b53e3fbdd76899dae"/>
                 <button class="js-t-actions-allowance">Check allowance</button>
@@ -88,19 +88,19 @@
             <td>
                 <h4>Check balance</h4>
                 <br><label>Address:</label>
-                <input type="text" class="js-t-actions-check-balance-address" placeholder="e.g., 0x93e66d9baea28c17d9fc393b53e3fbdd76899dae"/>
+                <input type="text" class="js-t-actions-check-balance-address js-my-address" placeholder="e.g., 0x93e66d9baea28c17d9fc393b53e3fbdd76899dae"/>
                 <button class="js-t-actions-check-balance">Check balance</button>
             </td>
             <td>
                 <h4>Check frozen token balance</h4>
                 <br><label>Address:</label>
-                <input type="text" class="js-t-actions-check-frozen-token-balance-address" placeholder="e.g., 0x93e66d9baea28c17d9fc393b53e3fbdd76899dae"/>
+                <input type="text" class="js-t-actions-check-frozen-token-balance-address js-my-address" placeholder="e.g., 0x93e66d9baea28c17d9fc393b53e3fbdd76899dae"/>
                 <button class="js-t-actions-check-frozen-token-balance">Check frozen token balance</button>
             </td>
             <td>
                 <h4>Check frozen token defrost date</h4>
                 <br><label>Address:</label>
-                <input type="text" class="js-t-actions-check-frozen-token-defrost-date-address" placeholder="e.g., 0x93e66d9baea28c17d9fc393b53e3fbdd76899dae"/>
+                <input type="text" class="js-t-actions-check-frozen-token-defrost-date-address js-my-address" placeholder="e.g., 0x93e66d9baea28c17d9fc393b53e3fbdd76899dae"/>
                 <button class="js-t-actions-check-frozen-token-defrost-date">Check frozen token defrost date</button>
             </td>
             <td>
@@ -117,7 +117,7 @@
                 <h4>Transfer and freeze</h4>
                 <i>Available to unpaused wallet only</i><br>
                 <label>Address:</label>
-                <input type="text" class="js-t-actions-transfer-and-freeze-address"/>
+                <input type="text" class="js-t-actions-transfer-and-freeze-address js-my-address"/>
                 <br><label>Amount * 10^18:</label>
                 <input type="text" class="js-t-actions-transfer-and-freeze-amount"/>
                 <br><label>When to defrost (unix timestamp):</label>
@@ -129,7 +129,7 @@
                 <h4>Freeze tokens</h4>
                 <i>Available to manager only</i><br>
                 <label>Address:</label>
-                <input type="text" class="js-t-actions-freeze-tokens-address"/>
+                <input type="text" class="js-t-actions-freeze-tokens-address js-my-address"/>
                 <br><label>Amount * 10^18:</label>
                 <input type="text" class="js-t-actions-freeze-tokens-amount"/>
                 <br><label>When to defrost (unix timestamp):</label>
