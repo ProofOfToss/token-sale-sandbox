@@ -228,6 +228,10 @@ window.App = {
     var crowdsale = await TossCrowdsale.deployed();
     var from = {from: account};
 
+    $('.js-cs-actions-reset').click(async () => {
+      await crowdsale.reset(from);
+    });
+
     $('.js-cs-actions-check-wallet-address').click(async () => {
       const roleNumber = parseInt($('.js-cs-actions-check-wallet-address-role-number').val(), 10);
 
@@ -442,6 +446,21 @@ window.App = {
     const tokenAddress = await crowdsale.token();
     const toss = await web3.eth.contract(TossToken.abi).at(tokenAddress);
     const from = {from: account};
+
+    toss.paused(function (e, r) {
+      console.log('IS PAUSED: ' + r);
+    });
+
+    $('.js-t-actions-allowance').click(function () {
+      var addressFrom = $('.js-t-actions-allowance-owner-address').val();
+      var addressTo = $('.js-t-actions-allowance-spender-address').val();
+
+      console.log(addressFrom, addressTo, from);
+
+      toss.allowance(addressFrom, addressTo, from, function (e, r) {
+        console.log(e, r);
+      });
+    });
 
     $('.js-t-actions-transfer').click(function () {
       var address = $('.js-t-actions-transfer-address').val();
