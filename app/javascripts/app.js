@@ -6,8 +6,8 @@ import { default as Web3} from 'web3';
 import { default as contract } from 'truffle-contract'
 
 // Import our contract artifacts and turn them into usable abstractions.
-import toss_crowdsale_artifacts from '../../build/contracts/TossCrowdsale.json'
-import toss_token_artifacts from '../../build/contracts/TossToken.json'
+import toss_crowdsale_artifacts from '../../build/contracts/Crowdsale.json'
+import toss_token_artifacts from '../../build/contracts/Token.json'
 
 // TossToken is our usable abstraction, which we'll use through the code below.
 var TossCrowdsale = contract(toss_crowdsale_artifacts);
