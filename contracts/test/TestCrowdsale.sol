@@ -17,6 +17,9 @@ contract TestCrowdsale is Crowdsale {
             0x1df62f291b2e969fb0849d99d9ce41e2f137006e, // Fund, 6%
             0xffcf8fdee72ac11b5c542428b35eef5769c409f0  // Fees, 7% money
         ];
+
+        startTime = now;
+        endTime = now + 30 days;
     }
 
     function mint(address _to, uint256 _amount) public returns (bool) {
