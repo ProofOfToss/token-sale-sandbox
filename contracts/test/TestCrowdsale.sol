@@ -4,8 +4,6 @@ import "../TokenSale/TokenSale/Crowdsale/Crowdsale.sol";
 import "../TokenSale/TokenSale/Crowdsale/Creator.sol";
 
 contract TestCrowdsale is Crowdsale {
-    address lastEvent;
-
     constructor(Creator _creator) public Crowdsale(_creator) {
         wallets = [
             0x90f8bf6a479f320ead074411a4b0e7944ea8c9c1, // Beneficiary
