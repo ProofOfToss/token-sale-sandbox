@@ -103,33 +103,33 @@ contract('Token', function (accounts) {
     const crowdsale = await Crowdsale.deployed();
     const token = await Token.at(await crowdsale.token());
 
-    const beneficiary = [
+    const tokenHolders = [
       '0xd12cFD596279CDb76915827d5039936cc48e2B8D',
       '0xbd44980Ca3B93Ce93A5C7393F93E6A3dD545EF23',
       '0xABCab1eBa2AA079a7E13102AD76Ffb235441b6c8'
     ];
 
-    await crowdsale.mint(beneficiary[0], 1500);
-    await crowdsale.mint(beneficiary[1], 1500);
-    await crowdsale.mint(beneficiary[2], 1500);
-    await crowdsale.massBurnTokens(beneficiary, [500, 500, 500], {from: accounts[2]});
+    await crowdsale.mint(tokenHolders[0], 1500);
+    await crowdsale.mint(tokenHolders[1], 1500);
+    await crowdsale.mint(tokenHolders[2], 1500);
+    await crowdsale.massBurnTokens(tokenHolders, [500, 500, 500], {from: accounts[2]});
 
-    assert.equal(await token.balanceOf(beneficiary[0]), 1000, '1000 tokens wasn\'t on beneficiary[0]');
-    assert.equal(await token.balanceOf(beneficiary[1]), 1000, '1000 tokens wasn\'t on beneficiary[1]');
-    assert.equal(await token.balanceOf(beneficiary[2]), 1000, '1000 tokens wasn\'t on beneficiary[2]');
+    assert.equal(await token.balanceOf(tokenHolders[0]), 1000, '1000 tokens wasn\'t on tokenHolders[0]');
+    assert.equal(await token.balanceOf(tokenHolders[1]), 1000, '1000 tokens wasn\'t on tokenHolders[1]');
+    assert.equal(await token.balanceOf(tokenHolders[2]), 1000, '1000 tokens wasn\'t on tokenHolders[2]');
 
-    await token.setUnburnableWallet(beneficiary[0], {from: accounts[2]});
+    await token.setUnburnableWallet(tokenHolders[0], {from: accounts[2]});
 
-    await expectThrow(crowdsale.massBurnTokens(beneficiary, [500, 500, 500], {from: accounts[2]}));
+    await expectThrow(crowdsale.massBurnTokens(tokenHolders, [500, 500, 500], {from: accounts[2]}));
 
-    assert.equal(await token.balanceOf(beneficiary[0]), 1000, '1000 tokens wasn\'t on beneficiary[0]');
-    assert.equal(await token.balanceOf(beneficiary[1]), 1000, '1000 tokens wasn\'t on beneficiary[1]');
-    assert.equal(await token.balanceOf(beneficiary[2]), 1000, '1000 tokens wasn\'t on beneficiary[2]');
+    assert.equal(await token.balanceOf(tokenHolders[0]), 1000, '1000 tokens wasn\'t on tokenHolders[0]');
+    assert.equal(await token.balanceOf(tokenHolders[1]), 1000, '1000 tokens wasn\'t on tokenHolders[1]');
+    assert.equal(await token.balanceOf(tokenHolders[2]), 1000, '1000 tokens wasn\'t on tokenHolders[2]');
 
-    await crowdsale.massBurnTokens([beneficiary[1], beneficiary[2]], [1000, 1000], {from: accounts[2]});
+    await crowdsale.massBurnTokens([tokenHolders[1], tokenHolders[2]], [1000, 1000], {from: accounts[2]});
 
-    assert.equal(await token.balanceOf(beneficiary[1]), 0, '0 tokens wasn\'t on beneficiary[1]');
-    assert.equal(await token.balanceOf(beneficiary[2]), 0, '0 tokens wasn\'t on beneficiary[2]');
+    assert.equal(await token.balanceOf(tokenHolders[1]), 0, '0 tokens wasn\'t on tokenHolders[1]');
+    assert.equal(await token.balanceOf(tokenHolders[2]), 0, '0 tokens wasn\'t on tokenHolders[2]');
   });
 
 });
