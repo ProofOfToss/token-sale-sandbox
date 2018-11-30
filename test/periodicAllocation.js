@@ -55,9 +55,9 @@ contract('PeriodicAllocation', function (accounts) {
     await allocation.unlockFor(tokenHolders[0]);
     await allocation.unlockFor(tokenHolders[1]);
 
-    assert.equal(parseInt(await token.balanceOf(tokenHolders[0])), sharePart1(1), 'sharePart1 tokens wasn\'t on tokenHolders[0]');
-    assert.equal(parseInt(await token.balanceOf(tokenHolders[1])), sharePart2(1), 'sharePart2 tokens wasn\'t on tokenHolders[1]');
-    assert.equal(parseInt(await token.balanceOf(allocation.address)), TOTAL - (sharePart1(1) + sharePart2(1)), 'TOTAL - (sharePart1 + sharePart2) tokens wasn\'t on allocation');
+    assert.equal(await token.balanceOf(tokenHolders[0]), sharePart1(1), 'sharePart1 tokens wasn\'t on tokenHolders[0]');
+    assert.equal(await token.balanceOf(tokenHolders[1]), sharePart2(1), 'sharePart2 tokens wasn\'t on tokenHolders[1]');
+    assert.equal(await token.balanceOf(allocation.address), TOTAL - (sharePart1(1) + sharePart2(1)), 'TOTAL - (sharePart1 + sharePart2) tokens wasn\'t on allocation');
 
     await wait(10000);
     await token.mint(accounts[0], 1); // mine tokens for adding new block to restrpc
@@ -67,9 +67,9 @@ contract('PeriodicAllocation', function (accounts) {
     await allocation.unlockFor(tokenHolders[0]); // Repeating unlockFor at same period should not transfer tokens
     await allocation.unlockFor(tokenHolders[1]);
 
-    assert.equal(parseInt(await token.balanceOf(tokenHolders[0])), sharePart1(2), '2 * sharePart1 tokens wasn\'t on tokenHolders[0]');
-    assert.equal(parseInt(await token.balanceOf(tokenHolders[1])), sharePart2(2), '2 * sharePart2 tokens wasn\'t on tokenHolders[1]');
-    assert.equal(parseInt(await token.balanceOf(allocation.address)), TOTAL - (sharePart1(2) + sharePart2(2)), 'TOTAL - 2 * (sharePart1 + sharePart2) tokens wasn\'t on allocation');
+    assert.equal(await token.balanceOf(tokenHolders[0]), sharePart1(2), '2 * sharePart1 tokens wasn\'t on tokenHolders[0]');
+    assert.equal(await token.balanceOf(tokenHolders[1]), sharePart2(2), '2 * sharePart2 tokens wasn\'t on tokenHolders[1]');
+    assert.equal(await token.balanceOf(allocation.address), TOTAL - (sharePart1(2) + sharePart2(2)), 'TOTAL - 2 * (sharePart1 + sharePart2) tokens wasn\'t on allocation');
 
     await wait(10000);
     await token.mint(accounts[0], 1); // mine tokens for adding new block to restrpc
@@ -77,9 +77,9 @@ contract('PeriodicAllocation', function (accounts) {
     await allocation.unlockFor(tokenHolders[0]);
     await allocation.unlockFor(tokenHolders[1]);
 
-    assert.equal(parseInt(await token.balanceOf(tokenHolders[0])), sharePart1(2), '2 * sharePart1 tokens wasn\'t on tokenHolders[0]');
-    assert.equal(parseInt(await token.balanceOf(tokenHolders[1])), sharePart2(3), '3 * sharePart2 tokens wasn\'t on tokenHolders[1]');
-    assert.equal(parseInt(await token.balanceOf(allocation.address)), 0, '0 tokens wasn\'t on allocation');
+    assert.equal(await token.balanceOf(tokenHolders[0]), sharePart1(2), '2 * sharePart1 tokens wasn\'t on tokenHolders[0]');
+    assert.equal(await token.balanceOf(tokenHolders[1]), sharePart2(3), '3 * sharePart2 tokens wasn\'t on tokenHolders[1]');
+    assert.equal(await token.balanceOf(allocation.address), 0, '0 tokens wasn\'t on allocation');
   });
 
 });
