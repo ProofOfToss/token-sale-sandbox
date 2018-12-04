@@ -242,25 +242,26 @@ contract('Crowdsale', function(accounts) {
 
     for (let i = 0; i < nowBalances.length; i++) {
       const accountIndex = nowBalances[i].account;
-      await allocationQueue.unlockFor(wallets[accountIndex]);
+      await allocationQueue.unlockFor(wallets[accountIndex], now);
+      await expectThrow(allocationQueue.unlockFor(wallets[accountIndex], now + monthSeconds));
 
-        assertBNEqual(await token.balanceOf(wallets[accountIndex]), nowBalances[i].balance, `invalid ${accountNames} now balance`);
+      assertBNEqual(await token.balanceOf(wallets[accountIndex]), nowBalances[i].balance, `invalid ${accountNames} now balance`);
     }
 
     await allocationQueue.setDateOffset(monthSeconds);
 
     for (let i = 0; i < oneMonthBalances.length; i++) {
       const accountIndex = oneMonthBalances[i].account;
-      await allocationQueue.unlockFor(wallets[accountIndex]);
+      await allocationQueue.unlockFor(wallets[accountIndex], now);
 
-        assertBNEqual(await token.balanceOf(wallets[accountIndex]), oneMonthBalances[i].balance, `invalid ${accountNames} one month balance`);
+      assertBNEqual(await token.balanceOf(wallets[accountIndex]), oneMonthBalances[i].balance, `invalid ${accountNames} one month balance`);
     }
 
     await allocationQueue.setDateOffset(monthSeconds * 2);
 
     for (let i = 0; i < twoMonthBalances.length; i++) {
       const accountIndex = twoMonthBalances[i].account;
-      await allocationQueue.unlockFor(wallets[accountIndex]);
+      await allocationQueue.unlockFor(wallets[accountIndex], now);
 
       assertBNEqual(await token.balanceOf(wallets[accountIndex]), twoMonthBalances[i].balance, `invalid ${accountNames} two month balance`);
     }
@@ -269,7 +270,7 @@ contract('Crowdsale', function(accounts) {
 
     for (let i = 0; i < sixMonthBalances.length; i++) {
       const accountIndex = sixMonthBalances[i].account;
-      await allocationQueue.unlockFor(wallets[accountIndex]);
+      await allocationQueue.unlockFor(wallets[accountIndex], now);
 
       assertBNEqual(await token.balanceOf(wallets[accountIndex]), sixMonthBalances[i].balance, `invalid ${accountNames} six month balance`);
     }
@@ -278,9 +279,9 @@ contract('Crowdsale', function(accounts) {
 
     for (let i = 0; i < twelveMonthBalances.length; i++) {
       const accountIndex = twelveMonthBalances[i].account;
-      await allocationQueue.unlockFor(wallets[accountIndex]);
+      await allocationQueue.unlockFor(wallets[accountIndex], now);
 
-        assertBNEqual(await token.balanceOf(wallets[accountIndex]), twelveMonthBalances[i].balance, `invalid ${accountNames} twelve month balance`);
+      assertBNEqual(await token.balanceOf(wallets[accountIndex]), twelveMonthBalances[i].balance, `invalid ${accountNames} twelve month balance`);
     }
 
     assertBNEqual(parseInt(await token.freezedTokenOf(wallets[11])), 0, 'invalid Airdrop freezed tokens');
