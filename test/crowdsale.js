@@ -38,8 +38,8 @@ contract('Crowdsale', function(accounts) {
     }
 
     let balance = 0;
-    assert.equal(0, parseInt(await token.balanceOf(accounts[10])), '0 tokens wasn\'t on accounts[10]');
-    assert.equal(0, parseInt(await token.freezedTokenOf(accounts[10])), '0 freezed tokens wasn\'t on accounts[10]');
+    assert.equal(parseInt(await token.balanceOf(accounts[10])), 0, '0 tokens wasn\'t on accounts[10]');
+    assert.equal(parseInt(await token.freezedTokenOf(accounts[10])), 0, '0 freezed tokens wasn\'t on accounts[10]');
 
     // min pay: web3.toWei(71, 'finney')
     // value bonus 30%: web3.toWei(71, 'ether')
@@ -70,40 +70,40 @@ contract('Crowdsale', function(accounts) {
     balance += getTokens(amount) * TB1day;
     await crowdsale.buyTokens(accounts[10], {from: accounts[10], value: amount});
 
-    assertBNEqual(balance, await token.balanceOf(accounts[10]), 'invalid purchase with 1 day time bonus');
+    assertBNEqual(await token.balanceOf(accounts[10]), balance, 'invalid purchase with 1 day time bonus');
 
     // Maximum of Time bonus 1 day and Volume bonus
     balance += getTokens(VBValue) * VBBonus;
     await crowdsale.buyTokens(accounts[10], {from: accounts[10], value: VBValue});
 
-    assertBNEqual(balance, await token.balanceOf(accounts[10]), 'invalid purchase with 1 day time bonus and volume bonus');
+    assertBNEqual(await token.balanceOf(accounts[10]), balance, 'invalid purchase with 1 day time bonus and volume bonus');
 
     await crowdsale.setStartTime(now - 24 * 3600);
 
     // Time bonus 3 day
     balance += getTokens(amount) * TB3day;
     await crowdsale.buyTokens(accounts[10], {from: accounts[10], value: amount});
-    assertBNEqual(balance, await token.balanceOf(accounts[10]), 'invalid purchase with 2 days time bonus');
+    assertBNEqual(await token.balanceOf(accounts[10]), balance, 'invalid purchase with 2 days time bonus');
 
     await crowdsale.setStartTime(now - 3 * 24 * 3600);
 
     // Time bonus 7 day
     balance += getTokens(amount) * TB7day;
     await crowdsale.buyTokens(accounts[10], {from: accounts[10], value: amount});
-    assertBNEqual(balance, await token.balanceOf(accounts[10]), 'invalid purchase with 4 days time bonus');
+    assertBNEqual(await token.balanceOf(accounts[10]), balance, 'invalid purchase with 4 days time bonus');
 
     await crowdsale.setStartTime(now - 7 * 24 * 3600);
 
     // No bonus
     balance += getTokens(amount);
     await crowdsale.buyTokens(accounts[10], {from: accounts[10], value: amount});
-    assertBNEqual(balance, await token.balanceOf(accounts[10]), 'invalid purchase without bonus');
+    assertBNEqual(await token.balanceOf(accounts[10]), balance, 'invalid purchase without bonus');
 
     // Volume bonus
     balance += getTokens(VBValue) * VBBonus;
     await crowdsale.buyTokens(accounts[10], {from: accounts[10], value: VBValue});
-    assertBNEqual(balance, await token.balanceOf(accounts[10]), 'invalid purchase with volume bonus');
+    assertBNEqual(await token.balanceOf(accounts[10]), balance, 'invalid purchase with volume bonus');
 
-    assert.equal(0, parseInt(await token.freezedTokenOf(accounts[10])), '0 freezed tokens wasn\'t on accounts[10]');
+    assert.equal(parseInt(await token.freezedTokenOf(accounts[10])), 0, '0 freezed tokens wasn\'t on accounts[10]');
   });
 });
