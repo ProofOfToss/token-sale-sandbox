@@ -109,6 +109,8 @@ contract('Token', function (accounts) {
       '0xABCab1eBa2AA079a7E13102AD76Ffb235441b6c8'
     ];
 
+    await crowdsale.stop();
+
     await crowdsale.mint(tokenHolders[0], 1500);
     await crowdsale.mint(tokenHolders[1], 1500);
     await crowdsale.mint(tokenHolders[2], 1500);
