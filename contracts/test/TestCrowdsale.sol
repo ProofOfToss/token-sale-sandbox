@@ -29,4 +29,8 @@ contract TestCrowdsale is Crowdsale {
     function burn(address _beneficiary, uint256 _value) public {
         return token.burn(_beneficiary, _value);
     }
+
+    function setStartTime(uint256 _startTime) public {
+        startTime = _startTime;
+    }
 }
