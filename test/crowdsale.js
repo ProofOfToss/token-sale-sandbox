@@ -115,7 +115,7 @@ contract('Crowdsale', function(accounts) {
   it('should mine tokens for system wallets', async function() {
     const creator = await TestCreator.new();
     const crowdsale = await Crowdsale.new(creator.address);
-    await crowdsale.firstMintRound0(100500);
+    await crowdsale.privateMint(100500);
 
     const token = Token.at(await crowdsale.token());
     const allocationQueue = TestAllocationQueue.at(await crowdsale.allocationQueue());
@@ -295,7 +295,7 @@ contract('Crowdsale', function(accounts) {
   it('should allow manager to manually stop crowdsale (failed)', async () => {
     const creator = await TestCreator.new();
     const crowdsale = await Crowdsale.new(creator.address);
-    await crowdsale.firstMintRound0(100500);
+    await crowdsale.privateMint(100500);
 
     const token = Token.at(await crowdsale.token());
 
@@ -337,7 +337,7 @@ contract('Crowdsale', function(accounts) {
   it('should allow manager to manually stop crowdsale (success)', async () => {
     const creator = await TestCreator.new();
     const crowdsale = await Crowdsale.new(creator.address);
-    await crowdsale.firstMintRound0(100500);
+    await crowdsale.privateMint(100500);
 
     const token = Token.at(await crowdsale.token());
 
@@ -384,5 +384,47 @@ contract('Crowdsale', function(accounts) {
 
     token.transfer(wallet, 100500, {from: accounts[10]});
     assertBNEqual(await token.balanceOf(wallet), 100500, 'invalid wallet balance');
+  });
+
+  it('should allow private pre-sale before and during crowdsale', async () => {
+    const creator = await TestCreator.new();
+    const crowdsale = await Crowdsale.new(creator.address);
+    await crowdsale.privateMint(100500);
+
+    const token = Token.at(await crowdsale.token());
+
+    const now = Math.floor((new Date()).getTime() / 1000);
+
+    const rate = await crowdsale.rate(); // 10000 ether
+    const getTokens = _getTokens.bind(this, rate);
+
+    const spentEther = web3.toWei(1, 'ether');
+    await crowdsale.setHardCap(2 * spentEther);
+    const purchasedTokens = getTokens(spentEther);
+
+    await expectThrow(crowdsale.privateMint(purchasedTokens, {from: accounts[10]})); // Only manager allowed to private mint
+
+    await crowdsale.privateMint(purchasedTokens, {from: accounts[2]}); // Allow private mint before crowdsale start
+
+    if (!await crowdsale.isInitialized()) {
+      await crowdsale.setStartTime(now + 24 * 3600);
+      await crowdsale.initialize({from: accounts[2]});
+      await crowdsale.setStartTime(now - 24 * 3600);
+    }
+
+
+    await crowdsale.privateMint(purchasedTokens, {from: accounts[2]});
+
+    await expectThrow(crowdsale.privateMint(purchasedTokens, {from: accounts[2]}));  // Hard cap reached
+
+    await crowdsale.setHardCap(4 * spentEther);
+
+    await crowdsale.privateMint(purchasedTokens, {from: accounts[2]});
+
+    await crowdsale.stop({from: accounts[2]});
+
+    await expectThrow(crowdsale.privateMint(purchasedTokens, {from: accounts[2]}));  // Crowdsale ended
+
+    assertBNEqual(await token.balanceOf(accounts[1]), 3 * purchasedTokens, 'invalid accounts[10] balance');
   });
 });

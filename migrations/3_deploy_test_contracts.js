@@ -9,7 +9,7 @@ module.exports = function(deployer) {
     deployer.deploy(Token);
     deployer.deploy(TestCreator).then((creator) => {
       return deployer.deploy(TestCrowdsale, creator.address).then((crowdsale) => {
-        return crowdsale.firstMintRound0(100500);
+        return crowdsale.privateMint(100500);
       });
     });
   }
