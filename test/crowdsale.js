@@ -3,9 +3,7 @@ import expectThrow from './helpers/expectThrow';
 const Crowdsale = artifacts.require('./test/TestCrowdsale.sol');
 const Token = artifacts.require('./token-sale-contracts/TokenSale/Token/Token.sol');
 const Creator = artifacts.require('./token-sale-contracts/TokenSale/Crowdsale/Creator.sol');
-const PeriodicAllocation = artifacts.require('./token-sale-contracts/TokenSale/Crowdsale/PeriodicAllocation.sol');
 const TestCreator = artifacts.require('./token-sale-contracts/TokenSale/Crowdsale/TestCreator.sol');
-const TestAllocationQueue = artifacts.require('./token-sale-contracts/TokenSale/Crowdsale/TestAllocationQueue.sol');
 
 const web3 = Token.web3;
 
@@ -112,24 +110,14 @@ contract('Crowdsale', function(accounts) {
     assert.equal(parseInt(await token.freezedTokenOf(accounts[10])), 0, '0 freezed tokens wasn\'t on accounts[10]');
   });
 
-  it('should mine tokens for system wallets', async function() {
+  it('should allow manager to manually stop crowdsale (failed)', async () => {
     const creator = await TestCreator.new();
     const crowdsale = await Crowdsale.new(creator.address);
     await crowdsale.privateMint(100500);
 
     const token = Token.at(await crowdsale.token());
-    const allocationQueue = TestAllocationQueue.at(await crowdsale.allocationQueue());
-    const allocation = PeriodicAllocation.at(await crowdsale.allocation());
 
     const now = Math.floor((new Date()).getTime() / 1000);
-
-    const monthSeconds = 30 * 24 * 60 * 60;
-    const yearSeconds = 366 * 24 * 60 * 60;
-
-    const oneMonth = Math.floor((now + monthSeconds) / monthSeconds);
-    const twoMonth = Math.floor((now + monthSeconds * 2) / monthSeconds);
-    const sixMonth = Math.floor((now + monthSeconds * 6) / monthSeconds);
-    const twelveMonth = Math.floor((now + monthSeconds * 12) / monthSeconds);
 
     if (!await crowdsale.isInitialized()) {
       await crowdsale.setStartTime(now + 24 * 3600);
@@ -137,10 +125,46 @@ contract('Crowdsale', function(accounts) {
       await crowdsale.setStartTime(now);
     }
 
-    const wallets = [];
+    const rate = await crowdsale.rate(); // 10000 ether
+    const getTokens = _getTokens.bind(this, rate);
 
-    for (let i = 0; i < 12; i++) {
-      wallets[i] = await crowdsale.wallets(i);
+    await crowdsale.setStartTime(now - 7 * 24 * 3600); // Disable time bonus
+
+    const originalBalance = web3.eth.getBalance(accounts[10]);
+    const spentEther = web3.toWei(1, 'ether');
+    const purchasedTokens = getTokens(spentEther);
+
+    await expectThrow(crowdsale.stop({from: accounts[10]}));
+
+    await crowdsale.buyTokens(accounts[10], {from: accounts[10], value: spentEther});
+
+    assertBNEqual(await token.balanceOf(accounts[10]), purchasedTokens, 'invalid accounts[10] balance');
+    assertBNEqual(web3.eth.getBalance(accounts[10]), originalBalance - spentEther, 'invalid accounts[10] eth balance');
+
+    await crowdsale.stop({from: accounts[2]})
+
+    await expectThrow(crowdsale.buyTokens(accounts[10], {from: accounts[10], value: spentEther}));
+
+    await crowdsale.finalize({from: accounts[10]}); // Crowdsale failed anybody can finalize
+
+    await crowdsale.claimRefund({from: accounts[10]});
+
+    assertBNEqual(web3.eth.getBalance(accounts[10]), originalBalance, 'invalid accounts[10] eth balance');
+  });
+
+  it('should allow manager to manually stop crowdsale (success)', async () => {
+    const creator = await TestCreator.new();
+    const crowdsale = await Crowdsale.new(creator.address);
+    await crowdsale.firstMintRound0(100500);
+
+    const token = Token.at(await crowdsale.token());
+
+    const now = Math.floor((new Date()).getTime() / 1000);
+
+    if (!await crowdsale.isInitialized()) {
+      await crowdsale.setStartTime(now + 24 * 3600);
+      await crowdsale.initialize({from: accounts[2]});
+      await crowdsale.setStartTime(now);
     }
 
     const rate = await crowdsale.rate(); // 10000 ether
@@ -148,148 +172,36 @@ contract('Crowdsale', function(accounts) {
 
     await crowdsale.setStartTime(now - 7 * 24 * 3600); // Disable time bonus
 
+    const originalBalance = web3.eth.getBalance(accounts[10]);
     const spentEther = web3.toWei(1, 'ether');
+    await crowdsale.setSoftCap(spentEther);
     const purchasedTokens = getTokens(spentEther);
-    const totalTokens = purchasedTokens * 2;
 
-    assert.equal(parseInt(await token.balanceOf(accounts[10])), 0, '0 tokens wasn\'t on accounts[10]');
+    await expectThrow(crowdsale.stop({from: accounts[10]}));
 
     await crowdsale.buyTokens(accounts[10], {from: accounts[10], value: spentEther});
 
     assertBNEqual(await token.balanceOf(accounts[10]), purchasedTokens, 'invalid accounts[10] balance');
-    assertBNEqual(await token.balanceOf(allocationQueue.address), totalTokens * 0.43, 'invalid allocationQueue balance');
-    assertBNEqual(parseInt(await token.freezedTokenOf(accounts[10])), 0, 'invalid accounts[10] freezed tokens');
-    assertBNEqual(parseInt(await token.freezedTokenOf(allocationQueue.address)), 0, 'invalid allocationQueue freezed tokens');
+    assertBNEqual(web3.eth.getBalance(accounts[10]), originalBalance - spentEther, 'invalid accounts[10] eth balance');
 
-    // 4% – tokens for Airdrop, freeze 2 month
-    assertBNEqual(await allocationQueue.queue(wallets[11], twoMonth), totalTokens * 0.04, 'invalid Airdrop balance');
+    await crowdsale.stop({from: accounts[2]})
 
-    // 7% - tokens for Players and Investors
-    assertBNEqual(await token.balanceOf(wallets[10]), 0, 'invalid Players and Investors balance');
-    assertBNEqual(await token.balanceOf(allocation.address), totalTokens * 0.07, 'invalid Players and Investors allocation balance');
+    await expectThrow(crowdsale.buyTokens(accounts[10], {from: accounts[10], value: spentEther}));
 
-    // 4% - tokens to Company (White List) wallet, freeze 1 month
-    assertBNEqual(await allocationQueue.queue(wallets[5], oneMonth), totalTokens * 0.04, 'invalid Company (White List) balance');
+    await expectThrow(crowdsale.finalize({from: accounts[10]})); // Crowdsale successed only manager can finalize
+    await crowdsale.finalize({from: accounts[2]});
 
-    // 7% - tokens to Team wallet, freeze 50% 6 month, 50% 12 month
-    assertBNEqual(await allocationQueue.queue(wallets[6], sixMonth), totalTokens * 0.07 / 2, 'invalid Team balance');
-    assertBNEqual(await allocationQueue.queue(wallets[6], twelveMonth), totalTokens * 0.07 / 2, 'invalid Team balance');
+    await expectThrow(crowdsale.claimRefund({from: accounts[10]}));
 
-    // 1% - tokens to Bounty wallet, freeze 2 month
-    assertBNEqual(await allocationQueue.queue(wallets[4], twoMonth), totalTokens * 0.01, 'invalid Bounty balance');
+    const wallet = '0xd12cFD596279CDb76915827d5039936cc48e2B8D';
 
-    // 15% - tokens to Founders wallet, freeze 50% 6 month, 50% 12 month
-    assertBNEqual(await allocationQueue.queue(wallets[7], sixMonth), totalTokens * 0.15 / 2, 'invalid Founders balance');
-    assertBNEqual(await allocationQueue.queue(wallets[7], twelveMonth), totalTokens * 0.15 / 2, 'invalid Founders balance');
+    await expectThrow(token.transfer(wallet, 100500, {from: accounts[10]})); // Token is paused
 
-    // 12% - tokens to Fund wallet, freeze 50% 2 month, 50% 12 month
-    assertBNEqual(await allocationQueue.queue(wallets[8], twoMonth), totalTokens * 0.12 / 2, 'invalid Fund balance');
-    assertBNEqual(await allocationQueue.queue(wallets[8], twelveMonth), totalTokens * 0.12 / 2, 'invalid Fund balance');
+    await crowdsale.setStopTime(now - 60 * 24 * 60 * 60); // Allow users to unpause. Set stop time = now - USER_UNPAUSE_TOKEN_TIMEOUT
+    await crowdsale.tokenUnpause({from: accounts[10]}); // Crowdsale successed anybody can unpause
 
-    const accountNames = {
-      11: 'Airdrop',
-      5: 'Company (White List)',
-      6: 'Team',
-      4: 'Bounty',
-      7: 'Founders',
-      8: 'Fund',
-    };
-
-    const nowBalances = [
-      {account: 11, balance: 0}, // Airdrop
-      {account:  5, balance: 0}, // Company (White List)
-      {account:  6, balance: 0}, // Team
-      {account:  4, balance: 0}, // Bounty
-      {account:  7, balance: 0}, // Founders
-      {account:  8, balance: 0}  // Fund
-    ];
-
-    const oneMonthBalances = [
-      {account: 11, balance: 0}, // Airdrop
-      {account:  5, balance: totalTokens * 0.04}, // Company (White List)
-      {account:  6, balance: 0}, // Team
-      {account:  4, balance: 0}, // Bounty
-      {account:  7, balance: 0}, // Founders
-      {account:  8, balance: 0}  // Fund
-    ];
-
-    const twoMonthBalances = [
-      {account: 11, balance: totalTokens * 0.04}, // Airdrop
-      {account:  5, balance: totalTokens * 0.04}, // Company (White List)
-      {account:  6, balance: 0}, // Team
-      {account:  4, balance: totalTokens * 0.01}, // Bounty
-      {account:  7, balance: 0}, // Founders
-      {account:  8, balance: totalTokens * 0.12 / 2}  // Fund
-    ];
-
-    const sixMonthBalances = [
-      {account: 11, balance: totalTokens * 0.04}, // Airdrop
-      {account:  5, balance: totalTokens * 0.04}, // Company (White List)
-      {account:  6, balance: totalTokens * 0.07 / 2}, // Team
-      {account:  4, balance: totalTokens * 0.01}, // Bounty
-      {account:  7, balance: totalTokens * 0.15 / 2}, // Founders
-      {account:  8, balance: totalTokens * 0.12 / 2}  // Fund
-    ];
-
-    const twelveMonthBalances = [
-      {account: 11, balance: totalTokens * 0.04}, // Airdrop
-      {account:  5, balance: totalTokens * 0.04}, // Company (White List)
-      {account:  6, balance: totalTokens * 0.07}, // Team
-      {account:  4, balance: totalTokens * 0.01}, // Bounty
-      {account:  7, balance: totalTokens * 0.15}, // Founders
-      {account:  8, balance: totalTokens * 0.12}  // Fund
-    ];
-
-    for (let i = 0; i < nowBalances.length; i++) {
-      const accountIndex = nowBalances[i].account;
-      await allocationQueue.unlockFor(wallets[accountIndex], now);
-      await expectThrow(allocationQueue.unlockFor(wallets[accountIndex], now + monthSeconds));
-
-      assertBNEqual(await token.balanceOf(wallets[accountIndex]), nowBalances[i].balance, `invalid ${accountNames} now balance`);
-    }
-
-    await allocationQueue.setDateOffset(monthSeconds);
-
-    for (let i = 0; i < oneMonthBalances.length; i++) {
-      const accountIndex = oneMonthBalances[i].account;
-      await allocationQueue.unlockFor(wallets[accountIndex], now);
-
-      assertBNEqual(await token.balanceOf(wallets[accountIndex]), oneMonthBalances[i].balance, `invalid ${accountNames} one month balance`);
-    }
-
-    await allocationQueue.setDateOffset(monthSeconds * 2);
-
-    for (let i = 0; i < twoMonthBalances.length; i++) {
-      const accountIndex = twoMonthBalances[i].account;
-      await allocationQueue.unlockFor(wallets[accountIndex], now);
-
-      assertBNEqual(await token.balanceOf(wallets[accountIndex]), twoMonthBalances[i].balance, `invalid ${accountNames} two month balance`);
-    }
-
-    await allocationQueue.setDateOffset(monthSeconds * 6);
-
-    for (let i = 0; i < sixMonthBalances.length; i++) {
-      const accountIndex = sixMonthBalances[i].account;
-      await allocationQueue.unlockFor(wallets[accountIndex], now);
-
-      assertBNEqual(await token.balanceOf(wallets[accountIndex]), sixMonthBalances[i].balance, `invalid ${accountNames} six month balance`);
-    }
-
-    await allocationQueue.setDateOffset(yearSeconds);
-
-    for (let i = 0; i < twelveMonthBalances.length; i++) {
-      const accountIndex = twelveMonthBalances[i].account;
-      await allocationQueue.unlockFor(wallets[accountIndex], now);
-
-      assertBNEqual(await token.balanceOf(wallets[accountIndex]), twelveMonthBalances[i].balance, `invalid ${accountNames} twelve month balance`);
-    }
-
-    assertBNEqual(parseInt(await token.freezedTokenOf(wallets[11])), 0, 'invalid Airdrop freezed tokens');
-    assertBNEqual(parseInt(await token.freezedTokenOf(wallets[5])), 0, 'invalid Company (White List) freezed tokens');
-    assertBNEqual(parseInt(await token.freezedTokenOf(wallets[6])), 0, 'invalid Team freezed tokens');
-    assertBNEqual(parseInt(await token.freezedTokenOf(wallets[4])), 0, 'invalid Bounty freezed tokens');
-    assertBNEqual(parseInt(await token.freezedTokenOf(wallets[7])), 0, 'invalid Founders freezed tokens');
-    assertBNEqual(parseInt(await token.freezedTokenOf(wallets[8])), 0, 'invalid Fund freezed tokens');
+    token.transfer(wallet, 100500, {from: accounts[10]});
+    assertBNEqual(await token.balanceOf(wallet), 100500, 'invalid wallet balance');
   });
 
   it('should allow manager to manually stop crowdsale (failed)', async () => {
