@@ -23,4 +23,8 @@ contract TestAllocationQueue is AllocationQueue {
     function groupDates(uint256 _date) internal view returns (uint256) {
         return super.groupDates(_date.add(datePositiveOffset).sub(dateNegativeOffset));
     }
+
+    function groupDatesPublic(uint256 _date) public view returns (uint256) {
+        return super.groupDates(_date);
+    }
 }
