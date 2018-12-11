@@ -3,10 +3,20 @@ import expectThrow from './helpers/expectThrow';
 const Crowdsale = artifacts.require('./test/TestCrowdsale.sol');
 const Token = artifacts.require('./token-sale-contracts/TokenSale/Token/Token.sol');
 const Creator = artifacts.require('./token-sale-contracts/TokenSale/Crowdsale/Creator.sol');
+const TestCreator = artifacts.require('./token-sale-contracts/TokenSale/Crowdsale/TestCreator.sol');
 
 const web3 = Token.web3;
 
 contract('Crowdsale', function(accounts) {
+
+  const _getTokens = (rate, wei) => rate * wei / web3.toWei(1, 'ether');
+  const assertBNEqual = (actual, expected, message) => {
+    return assert.equal(
+      Math.round(actual / web3.toWei(1, 'ether')),
+      Math.round(expected / web3.toWei(1, 'ether')),
+      message
+    );
+  };
 
   it('should have test accounts in wallets', async function() {
     const crowdsale = await Crowdsale.deployed();
@@ -55,14 +65,7 @@ contract('Crowdsale', function(accounts) {
 
     const rate = await crowdsale.rate(); // 10000 ether
     const amount = web3.toWei(1, 'ether');
-    const getTokens = (wei) => rate * wei / web3.toWei(1, 'ether');
-    const assertBNEqual = (actual, expected, message) => {
-      return assert.equal(
-        Math.round(actual / web3.toWei(1, 'ether')),
-        Math.round(expected / web3.toWei(1, 'ether')),
-        message
-      );
-    };
+    const getTokens = _getTokens.bind(this, rate);
 
     await crowdsale.setStartTime(now - 60);
 
