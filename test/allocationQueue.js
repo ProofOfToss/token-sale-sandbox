@@ -8,7 +8,7 @@ const TestAllocationQueue = artifacts.require('./token-sale-contracts/TokenSale/
 
 const web3 = Token.web3;
 
-contract('Crowdsale', function(accounts) {
+contract('AllocationQueue', function(accounts) {
 
   const _getTokens = (rate, wei) => rate * wei / web3.toWei(1, 'ether');
   const assertBNEqual = (actual, expected, message) => {
@@ -52,7 +52,14 @@ contract('Crowdsale', function(accounts) {
   it('should mine tokens for system wallets', async function() {
     const creator = await TestCreator.new();
     const crowdsale = await Crowdsale.new(creator.address);
-    await crowdsale.firstMintRound0(100500);
+
+    const rate = await crowdsale.rate(); // 10000 ether
+    const getTokens = _getTokens.bind(this, rate);
+    const spentEther = web3.toWei(1, 'ether');
+    const purchasedTokens = getTokens(spentEther);
+    const totalTokens = purchasedTokens * 2;
+
+    await crowdsale.privateMint(purchasedTokens / 2);
 
     const token = Token.at(await crowdsale.token());
     const allocationQueue = TestAllocationQueue.at(await crowdsale.allocationQueue());
@@ -77,25 +84,19 @@ contract('Crowdsale', function(accounts) {
     }
 
     const wallets = [];
-
     for (let i = 0; i < 12; i++) {
       wallets[i] = await crowdsale.wallets(i);
     }
 
-    const rate = await crowdsale.rate(); // 10000 ether
-    const getTokens = _getTokens.bind(this, rate);
-
     await crowdsale.setStartTime(now - 7 * 24 * 3600); // Disable time bonus
-
-    const spentEther = web3.toWei(1, 'ether');
-    const purchasedTokens = getTokens(spentEther);
-    const totalTokens = purchasedTokens * 2;
 
     assert.equal(parseInt(await token.balanceOf(accounts[10])), 0, '0 tokens wasn\'t on accounts[10]');
 
-    await crowdsale.buyTokens(accounts[10], {from: accounts[10], value: spentEther});
+    await crowdsale.buyTokens(accounts[10], {from: accounts[10], value: spentEther / 2});
 
-    assertBNEqual(await token.balanceOf(accounts[10]), purchasedTokens, 'invalid accounts[10] balance');
+    assertBNEqual(await crowdsale.ethWeiRaised(), spentEther, 'invalid Accountant balance');
+    assertBNEqual(await token.balanceOf(accounts[1]), purchasedTokens / 2, 'invalid Accountant balance');
+    assertBNEqual(await token.balanceOf(accounts[10]), purchasedTokens / 2, 'invalid accounts[10] balance');
     assertBNEqual(await token.balanceOf(allocationQueue.address), totalTokens * 0.43, 'invalid allocationQueue balance');
     assertBNEqual(parseInt(await token.freezedTokenOf(accounts[10])), 0, 'invalid accounts[10] freezed tokens');
     assertBNEqual(parseInt(await token.freezedTokenOf(allocationQueue.address)), 0, 'invalid allocationQueue freezed tokens');
@@ -133,7 +134,7 @@ contract('Crowdsale', function(accounts) {
       7: 'Founders',
       8: 'Fund',
     };
-    console.log('test 3');
+
     const nowBalances = [
       {account: 11, balance: 0}, // Airdrop
       {account:  5, balance: 0}, // Company (White List)
