@@ -1,6 +1,7 @@
 require('babel-polyfill');
 
 import expectThrow from './helpers/expectThrow';
+import assertBNEqual from './helpers/assertBNEqual';
 
 const Token = artifacts.require('./token-sale-contracts/TokenSale/Token/Token.sol');
 const PeriodicAllocation = artifacts.require('./test/PeriodicAllocation.sol');
@@ -49,6 +50,10 @@ contract('PeriodicAllocation', function (accounts) {
     assert.equal(await token.balanceOf(tokenHolders[1]), 0, '0 tokens wasn\'t on tokenHolders[1]');
     assert.equal(await token.balanceOf(allocation.address), TOTAL, '0 tokens wasn\'t on allocation');
 
+    assertBNEqual(parseInt(await token.freezedTokenOf(tokenHolders[0])), 0, 'invalid tokenHolders[0] freezed tokens');
+    assertBNEqual(parseInt(await token.freezedTokenOf(tokenHolders[1])), 0, 'invalid tokenHolders[1] freezed tokens');
+    assertBNEqual(parseInt(await token.freezedTokenOf(allocation.address)), 0, 'invalid allocation freezed tokens');
+
     await wait(10000);
     await token.mint(accounts[0], 1); // mine tokens for adding new block to restrpc
 
@@ -58,6 +63,10 @@ contract('PeriodicAllocation', function (accounts) {
     assert.equal(await token.balanceOf(tokenHolders[0]), sharePart1(1), 'sharePart1 tokens wasn\'t on tokenHolders[0]');
     assert.equal(await token.balanceOf(tokenHolders[1]), sharePart2(1), 'sharePart2 tokens wasn\'t on tokenHolders[1]');
     assert.equal(await token.balanceOf(allocation.address), TOTAL - (sharePart1(1) + sharePart2(1)), 'TOTAL - (sharePart1 + sharePart2) tokens wasn\'t on allocation');
+
+    assertBNEqual(parseInt(await token.freezedTokenOf(tokenHolders[0])), 0, 'invalid tokenHolders[0] freezed tokens');
+    assertBNEqual(parseInt(await token.freezedTokenOf(tokenHolders[1])), 0, 'invalid tokenHolders[1] freezed tokens');
+    assertBNEqual(parseInt(await token.freezedTokenOf(allocation.address)), 0, 'invalid allocation freezed tokens');
 
     await wait(10000);
     await token.mint(accounts[0], 1); // mine tokens for adding new block to restrpc
@@ -71,6 +80,10 @@ contract('PeriodicAllocation', function (accounts) {
     assert.equal(await token.balanceOf(tokenHolders[1]), sharePart2(2), '2 * sharePart2 tokens wasn\'t on tokenHolders[1]');
     assert.equal(await token.balanceOf(allocation.address), TOTAL - (sharePart1(2) + sharePart2(2)), 'TOTAL - 2 * (sharePart1 + sharePart2) tokens wasn\'t on allocation');
 
+    assertBNEqual(parseInt(await token.freezedTokenOf(tokenHolders[0])), 0, 'invalid tokenHolders[0] freezed tokens');
+    assertBNEqual(parseInt(await token.freezedTokenOf(tokenHolders[1])), 0, 'invalid tokenHolders[1] freezed tokens');
+    assertBNEqual(parseInt(await token.freezedTokenOf(allocation.address)), 0, 'invalid allocation freezed tokens');
+
     await wait(10000);
     await token.mint(accounts[0], 1); // mine tokens for adding new block to restrpc
 
@@ -80,6 +93,10 @@ contract('PeriodicAllocation', function (accounts) {
     assert.equal(await token.balanceOf(tokenHolders[0]), sharePart1(2), '2 * sharePart1 tokens wasn\'t on tokenHolders[0]');
     assert.equal(await token.balanceOf(tokenHolders[1]), sharePart2(3), '3 * sharePart2 tokens wasn\'t on tokenHolders[1]');
     assert.equal(await token.balanceOf(allocation.address), 0, '0 tokens wasn\'t on allocation');
+
+    assertBNEqual(parseInt(await token.freezedTokenOf(tokenHolders[0])), 0, 'invalid tokenHolders[0] freezed tokens');
+    assertBNEqual(parseInt(await token.freezedTokenOf(tokenHolders[1])), 0, 'invalid tokenHolders[1] freezed tokens');
+    assertBNEqual(parseInt(await token.freezedTokenOf(allocation.address)), 0, 'invalid allocation freezed tokens');
   });
 
 });

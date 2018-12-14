@@ -17,7 +17,8 @@ contract TestCrowdsale is Crowdsale {
             0x1df62f291b2e969fb0849d99d9ce41e2f137006e, // Fund
             0xffcf8fdee72ac11b5c542428b35eef5769c409f0, // Fees
             0x72B4c7ca80d10DCd7723B6BfaD9cac303f5A0059, // Players and investors
-            0xE13B138F16065e52Dd1A7e62467c4D959a27289f  // Airdrop
+            0xE13B138F16065e52Dd1A7e62467c4D959a27289f, // Airdrop
+            0x4DB1f7aC676536397BCf0b2fb7Aea5ef1ba96bde  // Referrals
         ];
 
         startTime = now;
