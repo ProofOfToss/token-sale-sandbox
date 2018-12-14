@@ -1,4 +1,5 @@
 import expectThrow from './helpers/expectThrow';
+import assertBNEqual from './helpers/assertBNEqual';
 
 const Crowdsale = artifacts.require('./test/TestCrowdsale.sol');
 const Token = artifacts.require('./token-sale-contracts/TokenSale/Token/Token.sol');
@@ -11,15 +12,6 @@ const web3 = Token.web3;
 contract('AllocationQueue', function(accounts) {
 
   const _getTokens = (rate, wei) => rate * wei / web3.toWei(1, 'ether');
-  const assertBNEqual = (actual, expected, message) => {
-    return assert.equal(
-      Math.round(actual / web3.toWei(1, 'ether')),
-      Math.round(expected / web3.toWei(1, 'ether')),
-      message
-    );
-  };
-
-
 
   it('should determine month for dates', async function() {
     const token = await Token.deployed();
@@ -234,5 +226,7 @@ contract('AllocationQueue', function(accounts) {
     assertBNEqual(parseInt(await token.freezedTokenOf(wallets[7])), 0, 'invalid Founders freezed tokens');
     assertBNEqual(parseInt(await token.freezedTokenOf(wallets[8])), 0, 'invalid Fund freezed tokens');
     assertBNEqual(parseInt(await token.freezedTokenOf(wallets[12])), 0, 'invalid Referrals freezed tokens');
+    assertBNEqual(parseInt(await token.freezedTokenOf(wallets[10])), 0, 'invalid Players and Investors freezed tokens');
+    assertBNEqual(parseInt(await token.freezedTokenOf(allocation.address)), 0, 'invalid Players and Investors allocation freezed tokens');
   });
 });
