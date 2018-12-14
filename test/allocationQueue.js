@@ -84,7 +84,7 @@ contract('AllocationQueue', function(accounts) {
     }
 
     const wallets = [];
-    for (let i = 0; i < 12; i++) {
+    for (let i = 0; i < 13; i++) {
       wallets[i] = await crowdsale.wallets(i);
     }
 
@@ -97,7 +97,7 @@ contract('AllocationQueue', function(accounts) {
     assertBNEqual(await crowdsale.ethWeiRaised(), spentEther, 'invalid Accountant balance');
     assertBNEqual(await token.balanceOf(accounts[1]), purchasedTokens / 2, 'invalid Accountant balance');
     assertBNEqual(await token.balanceOf(accounts[10]), purchasedTokens / 2, 'invalid accounts[10] balance');
-    assertBNEqual(await token.balanceOf(allocationQueue.address), totalTokens * 0.43, 'invalid allocationQueue balance');
+    assertBNEqual(await token.balanceOf(allocationQueue.address), totalTokens * 0.39, 'invalid allocationQueue balance');
     assertBNEqual(parseInt(await token.freezedTokenOf(accounts[10])), 0, 'invalid accounts[10] freezed tokens');
     assertBNEqual(parseInt(await token.freezedTokenOf(allocationQueue.address)), 0, 'invalid allocationQueue freezed tokens');
 
@@ -108,8 +108,8 @@ contract('AllocationQueue', function(accounts) {
     assertBNEqual(await token.balanceOf(wallets[10]), 0, 'invalid Players and Investors balance');
     assertBNEqual(await token.balanceOf(allocation.address), totalTokens * 0.07, 'invalid Players and Investors allocation balance');
 
-    // 4% - tokens to Company (White List) wallet, freeze 1 month
-    assertBNEqual(await allocationQueue.queue(wallets[5], oneMonth), totalTokens * 0.04, 'invalid Company (White List) balance');
+    // 4% - tokens to Advisers wallet, freeze 1 month
+    assertBNEqual(await allocationQueue.queue(wallets[5], oneMonth), totalTokens * 0.04, 'invalid Advisers balance');
 
     // 7% - tokens to Team wallet, freeze 50% 6 month, 50% 12 month
     assertBNEqual(await allocationQueue.queue(wallets[6], sixMonth), totalTokens * 0.07 / 2, 'invalid Team balance');
@@ -118,17 +118,20 @@ contract('AllocationQueue', function(accounts) {
     // 1% - tokens to Bounty wallet, freeze 2 month
     assertBNEqual(await allocationQueue.queue(wallets[4], twoMonth), totalTokens * 0.01, 'invalid Bounty balance');
 
-    // 15% - tokens to Founders wallet, freeze 50% 6 month, 50% 12 month
-    assertBNEqual(await allocationQueue.queue(wallets[7], sixMonth), totalTokens * 0.15 / 2, 'invalid Founders balance');
-    assertBNEqual(await allocationQueue.queue(wallets[7], twelveMonth), totalTokens * 0.15 / 2, 'invalid Founders balance');
+    // 11% - tokens to Founders wallet, freeze 50% 6 month, 50% 12 month
+    assertBNEqual(await allocationQueue.queue(wallets[7], sixMonth), totalTokens * 0.11 / 2, 'invalid Founders balance');
+    assertBNEqual(await allocationQueue.queue(wallets[7], twelveMonth), totalTokens * 0.11 / 2, 'invalid Founders balance');
 
     // 12% - tokens to Fund wallet, freeze 50% 2 month, 50% 12 month
     assertBNEqual(await allocationQueue.queue(wallets[8], twoMonth), totalTokens * 0.12 / 2, 'invalid Fund balance');
     assertBNEqual(await allocationQueue.queue(wallets[8], twelveMonth), totalTokens * 0.12 / 2, 'invalid Fund balance');
 
+    // 4% – tokens to Referrals wallet, no freeze
+    assertBNEqual(await token.balanceOf(wallets[12]), totalTokens * 0.04, 'invalid Referrals balance');
+
     const accountNames = {
       11: 'Airdrop',
-      5: 'Company (White List)',
+      5: 'Advisers',
       6: 'Team',
       4: 'Bounty',
       7: 'Founders',
@@ -137,16 +140,16 @@ contract('AllocationQueue', function(accounts) {
 
     const nowBalances = [
       {account: 11, balance: 0}, // Airdrop
-      {account:  5, balance: 0}, // Company (White List)
+      {account:  5, balance: 0}, // Advisers
       {account:  6, balance: 0}, // Team
       {account:  4, balance: 0}, // Bounty
       {account:  7, balance: 0}, // Founders
-      {account:  8, balance: 0}  // Fund
+      {account:  8, balance: 0} // Fund
     ];
 
     const oneMonthBalances = [
       {account: 11, balance: 0}, // Airdrop
-      {account:  5, balance: totalTokens * 0.04}, // Company (White List)
+      {account:  5, balance: totalTokens * 0.04}, // Advisers
       {account:  6, balance: 0}, // Team
       {account:  4, balance: 0}, // Bounty
       {account:  7, balance: 0}, // Founders
@@ -155,28 +158,28 @@ contract('AllocationQueue', function(accounts) {
 
     const twoMonthBalances = [
       {account: 11, balance: totalTokens * 0.04}, // Airdrop
-      {account:  5, balance: totalTokens * 0.04}, // Company (White List)
+      {account:  5, balance: totalTokens * 0.04}, // Advisers
       {account:  6, balance: 0}, // Team
       {account:  4, balance: totalTokens * 0.01}, // Bounty
       {account:  7, balance: 0}, // Founders
-      {account:  8, balance: totalTokens * 0.12 / 2}  // Fund
+      {account:  8, balance: totalTokens * 0.12 / 2} // Fund
     ];
 
     const sixMonthBalances = [
       {account: 11, balance: totalTokens * 0.04}, // Airdrop
-      {account:  5, balance: totalTokens * 0.04}, // Company (White List)
+      {account:  5, balance: totalTokens * 0.04}, // Advisers
       {account:  6, balance: totalTokens * 0.07 / 2}, // Team
       {account:  4, balance: totalTokens * 0.01}, // Bounty
-      {account:  7, balance: totalTokens * 0.15 / 2}, // Founders
+      {account:  7, balance: totalTokens * 0.11 / 2}, // Founders
       {account:  8, balance: totalTokens * 0.12 / 2}  // Fund
     ];
 
     const twelveMonthBalances = [
       {account: 11, balance: totalTokens * 0.04}, // Airdrop
-      {account:  5, balance: totalTokens * 0.04}, // Company (White List)
+      {account:  5, balance: totalTokens * 0.04}, // Advisers
       {account:  6, balance: totalTokens * 0.07}, // Team
       {account:  4, balance: totalTokens * 0.01}, // Bounty
-      {account:  7, balance: totalTokens * 0.15}, // Founders
+      {account:  7, balance: totalTokens * 0.11}, // Founders
       {account:  8, balance: totalTokens * 0.12}  // Fund
     ];
 
@@ -185,7 +188,7 @@ contract('AllocationQueue', function(accounts) {
       await allocationQueue.unlockFor(wallets[accountIndex], now);
       await expectThrow(allocationQueue.unlockFor(wallets[accountIndex], now + monthSeconds));
 
-      assertBNEqual(await token.balanceOf(wallets[accountIndex]), nowBalances[i].balance, `invalid ${accountNames} now balance`);
+      assertBNEqual(await token.balanceOf(wallets[accountIndex]), nowBalances[i].balance, `invalid ${accountNames[accountIndex]} now balance`);
     }
 
     await allocationQueue.setDateOffset(monthSeconds);
@@ -194,7 +197,7 @@ contract('AllocationQueue', function(accounts) {
       const accountIndex = oneMonthBalances[i].account;
       await allocationQueue.unlockFor(wallets[accountIndex], now);
 
-      assertBNEqual(await token.balanceOf(wallets[accountIndex]), oneMonthBalances[i].balance, `invalid ${accountNames} one month balance`);
+      assertBNEqual(await token.balanceOf(wallets[accountIndex]), oneMonthBalances[i].balance, `invalid ${accountNames[accountIndex]} one month balance`);
     }
 
     await allocationQueue.setDateOffset(monthSeconds * 2);
@@ -203,7 +206,7 @@ contract('AllocationQueue', function(accounts) {
       const accountIndex = twoMonthBalances[i].account;
       await allocationQueue.unlockFor(wallets[accountIndex], now);
 
-      assertBNEqual(await token.balanceOf(wallets[accountIndex]), twoMonthBalances[i].balance, `invalid ${accountNames} two month balance`);
+      assertBNEqual(await token.balanceOf(wallets[accountIndex]), twoMonthBalances[i].balance, `invalid ${accountNames[accountIndex]} two month balance`);
     }
 
     await allocationQueue.setDateOffset(monthSeconds * 6);
@@ -212,7 +215,7 @@ contract('AllocationQueue', function(accounts) {
       const accountIndex = sixMonthBalances[i].account;
       await allocationQueue.unlockFor(wallets[accountIndex], now);
 
-      assertBNEqual(await token.balanceOf(wallets[accountIndex]), sixMonthBalances[i].balance, `invalid ${accountNames} six month balance`);
+      assertBNEqual(await token.balanceOf(wallets[accountIndex]), sixMonthBalances[i].balance, `invalid ${accountNames[accountIndex]} six month balance`);
     }
 
     await allocationQueue.setDateOffset(yearSeconds);
@@ -221,14 +224,15 @@ contract('AllocationQueue', function(accounts) {
       const accountIndex = twelveMonthBalances[i].account;
       await allocationQueue.unlockFor(wallets[accountIndex], now);
 
-      assertBNEqual(await token.balanceOf(wallets[accountIndex]), twelveMonthBalances[i].balance, `invalid ${accountNames} twelve month balance`);
+      assertBNEqual(await token.balanceOf(wallets[accountIndex]), twelveMonthBalances[i].balance, `invalid ${accountNames[accountIndex]} twelve month balance`);
     }
 
     assertBNEqual(parseInt(await token.freezedTokenOf(wallets[11])), 0, 'invalid Airdrop freezed tokens');
-    assertBNEqual(parseInt(await token.freezedTokenOf(wallets[5])), 0, 'invalid Company (White List) freezed tokens');
+    assertBNEqual(parseInt(await token.freezedTokenOf(wallets[5])), 0, 'invalid Advisers freezed tokens');
     assertBNEqual(parseInt(await token.freezedTokenOf(wallets[6])), 0, 'invalid Team freezed tokens');
     assertBNEqual(parseInt(await token.freezedTokenOf(wallets[4])), 0, 'invalid Bounty freezed tokens');
     assertBNEqual(parseInt(await token.freezedTokenOf(wallets[7])), 0, 'invalid Founders freezed tokens');
     assertBNEqual(parseInt(await token.freezedTokenOf(wallets[8])), 0, 'invalid Fund freezed tokens');
+    assertBNEqual(parseInt(await token.freezedTokenOf(wallets[12])), 0, 'invalid Referrals freezed tokens');
   });
 });
