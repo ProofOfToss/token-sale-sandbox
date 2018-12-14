@@ -39,6 +39,10 @@ contract TestCrowdsale is Crowdsale {
         softCap = _softCap;
     }
 
+    function setHardCap(uint256 _hardCap) public {
+        hardCap = _hardCap;
+    }
+
     function setStopTime(uint256 _stopTime) public {
         stopTime = _stopTime;
     }
