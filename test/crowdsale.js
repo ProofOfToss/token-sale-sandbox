@@ -109,4 +109,98 @@ contract('Crowdsale', function(accounts) {
 
     assert.equal(parseInt(await token.freezedTokenOf(accounts[10])), 0, '0 freezed tokens wasn\'t on accounts[10]');
   });
+
+  it('should allow manager to manually stop crowdsale (failed)', async () => {
+    const creator = await TestCreator.new();
+    const crowdsale = await Crowdsale.new(creator.address);
+    await crowdsale.firstMintRound0(100500);
+
+    const token = Token.at(await crowdsale.token());
+
+    const now = Math.floor((new Date()).getTime() / 1000);
+
+    if (!await crowdsale.isInitialized()) {
+      await crowdsale.setStartTime(now + 24 * 3600);
+      await crowdsale.initialize({from: accounts[2]});
+      await crowdsale.setStartTime(now);
+    }
+
+    const rate = await crowdsale.rate(); // 10000 ether
+    const getTokens = _getTokens.bind(this, rate);
+
+    await crowdsale.setStartTime(now - 7 * 24 * 3600); // Disable time bonus
+
+    const originalBalance = web3.eth.getBalance(accounts[10]);
+    const spentEther = web3.toWei(1, 'ether');
+    const purchasedTokens = getTokens(spentEther);
+
+    await expectThrow(crowdsale.stop({from: accounts[10]}));
+
+    await crowdsale.buyTokens(accounts[10], {from: accounts[10], value: spentEther});
+
+    assertBNEqual(await token.balanceOf(accounts[10]), purchasedTokens, 'invalid accounts[10] balance');
+    assertBNEqual(web3.eth.getBalance(accounts[10]), originalBalance - spentEther, 'invalid accounts[10] eth balance');
+
+    await crowdsale.stop({from: accounts[2]})
+
+    await expectThrow(crowdsale.buyTokens(accounts[10], {from: accounts[10], value: spentEther}));
+
+    await crowdsale.finalize({from: accounts[10]}); // Crowdsale failed anybody can finalize
+
+    await crowdsale.claimRefund({from: accounts[10]});
+
+    assertBNEqual(web3.eth.getBalance(accounts[10]), originalBalance, 'invalid accounts[10] eth balance');
+  });
+
+  it('should allow manager to manually stop crowdsale (success)', async () => {
+    const creator = await TestCreator.new();
+    const crowdsale = await Crowdsale.new(creator.address);
+    await crowdsale.firstMintRound0(100500);
+
+    const token = Token.at(await crowdsale.token());
+
+    const now = Math.floor((new Date()).getTime() / 1000);
+
+    if (!await crowdsale.isInitialized()) {
+      await crowdsale.setStartTime(now + 24 * 3600);
+      await crowdsale.initialize({from: accounts[2]});
+      await crowdsale.setStartTime(now);
+    }
+
+    const rate = await crowdsale.rate(); // 10000 ether
+    const getTokens = _getTokens.bind(this, rate);
+
+    await crowdsale.setStartTime(now - 7 * 24 * 3600); // Disable time bonus
+
+    const originalBalance = web3.eth.getBalance(accounts[10]);
+    const spentEther = web3.toWei(1, 'ether');
+    await crowdsale.setSoftCap(spentEther);
+    const purchasedTokens = getTokens(spentEther);
+
+    await expectThrow(crowdsale.stop({from: accounts[10]}));
+
+    await crowdsale.buyTokens(accounts[10], {from: accounts[10], value: spentEther});
+
+    assertBNEqual(await token.balanceOf(accounts[10]), purchasedTokens, 'invalid accounts[10] balance');
+    assertBNEqual(web3.eth.getBalance(accounts[10]), originalBalance - spentEther, 'invalid accounts[10] eth balance');
+
+    await crowdsale.stop({from: accounts[2]})
+
+    await expectThrow(crowdsale.buyTokens(accounts[10], {from: accounts[10], value: spentEther}));
+
+    await expectThrow(crowdsale.finalize({from: accounts[10]})); // Crowdsale successed only manager can finalize
+    await crowdsale.finalize({from: accounts[2]});
+
+    await expectThrow(crowdsale.claimRefund({from: accounts[10]}));
+
+    const wallet = '0xd12cFD596279CDb76915827d5039936cc48e2B8D';
+
+    await expectThrow(token.transfer(wallet, 100500, {from: accounts[10]})); // Token is paused
+
+    await crowdsale.setStopTime(now - 60 * 24 * 60 * 60); // Allow users to unpause. Set stop time = now - USER_UNPAUSE_TOKEN_TIMEOUT
+    await crowdsale.tokenUnpause({from: accounts[10]}); // Crowdsale successed anybody can unpause
+
+    token.transfer(wallet, 100500, {from: accounts[10]});
+    assertBNEqual(await token.balanceOf(wallet), 100500, 'invalid wallet balance');
+  });
 });

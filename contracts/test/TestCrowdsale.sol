@@ -21,7 +21,6 @@ contract TestCrowdsale is Crowdsale {
         ];
 
         startTime = now;
-        endTime = now + 30 days;
     }
 
     function mint(address _to, uint256 _amount) public returns (bool) {
@@ -34,5 +33,13 @@ contract TestCrowdsale is Crowdsale {
 
     function setStartTime(uint256 _startTime) public {
         startTime = _startTime;
+    }
+
+    function setSoftCap(uint256 _softCap) public {
+        softCap = _softCap;
+    }
+
+    function setStopTime(uint256 _stopTime) public {
+        stopTime = _stopTime;
     }
 }
