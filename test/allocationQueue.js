@@ -67,7 +67,7 @@ contract('AllocationQueue', function(accounts) {
     const oneMonth = formatDate(new Date((now + monthSeconds) * 1000));
     const twoMonth = formatDate(new Date((now + monthSeconds * 2) * 1000));
     const sixMonth = formatDate(new Date((now + monthSeconds * 6) * 1000));
-    const twelveMonth = formatDate(new Date((now + monthSeconds * 12) * 1000));
+    const twelveMonth = formatDate(new Date((now + yearSeconds) * 1000));
 
     if (!await crowdsale.isInitialized()) {
       await crowdsale.setStartTime(now + 24 * 3600);

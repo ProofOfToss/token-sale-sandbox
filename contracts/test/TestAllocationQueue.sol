@@ -13,7 +13,7 @@ contract TestAllocationQueue is AllocationQueue {
     function setDateOffset(int256 _dateOffset) external {
         if (_dateOffset < 0) {
             datePositiveOffset = 0;
-            dateNegativeOffset = uint256(_dateOffset);
+            dateNegativeOffset = uint256(- _dateOffset);
         } else {
             dateNegativeOffset = 0;
             datePositiveOffset = uint256(_dateOffset);
