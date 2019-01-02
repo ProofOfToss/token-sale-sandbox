@@ -6,12 +6,33 @@
     <script src="./app.js"></script>
 </head>
 <body>
-<div>
-    <b>Useful links:</b>
-    <ul>
-        <li><a href="https://www.epochconverter.com/" target="_blank">Unix timestamp convertor</a></li>
-        <li><a href="https://etherconverter.online/" target="_blank">ETH currency converter</a></li>
-    </ul>
+<div style="display: flex;">
+    <div style="flex-grow: 1">
+        <b>Useful links:</b>
+        <ul>
+            <li><a href="https://www.epochconverter.com/" target="_blank">Unix timestamp convertor</a></li>
+            <li><a href="https://etherconverter.online/" target="_blank">ETH currency converter</a></li>
+        </ul>
+        <b>Timestamps</b>
+        <ul>
+            <li>Now: <span class="now"></span></li>
+            <li>Now + 3 min: <span class="now-plus-180"></span></li>
+            <li>Now + 5 min: <span class="now-plus-300"></span></li>
+            <li>Now + 10 min: <span class="now-plus-600"></span></li>
+            <li>Now + 1 month (2592000): <span class="now-plus-1m"></span></li>
+            <li>Now + 2 month (5184000): <span class="now-plus-2m"></span></li>
+            <li>Now + 6 month (15552000): <span class="now-plus-6m"></span></li>
+            <li>Now + 12 month (31104000): <span class="now-plus-12m"></span></li>
+        </ul>
+    </div>
+    <div style="flex-grow: 1">
+        <div>
+            <textarea id="excel-parameters" style="width: 100%;" rows="18"></textarea>
+        </div>
+        <div>
+            <button id="excel-parameters-fill">Fill parameters from excel</button>
+        </div>
+    </div>
 </div>
 
 <div class="crowdsale-actions1">
@@ -21,16 +42,12 @@
     <div>
         <div>Start time: <input type="text" class="js-cs-actions-setup-start-time" data-c-name="startTime"/>
         </div>
-        <div>
-            End discount time:
-            <input type="text" class="js-cs-actions-setup-end-discount-time" data-c-name="endDiscountTime"/>
-        </div>
-        <div>End time: <input type="text" class="js-cs-actions-setup-end-time" data-c-name="endTime"/></div>
         <div>Soft cap (wei): <input type="text" class="js-cs-actions-setup-soft-cap" data-c-name="softCap"/></div>
         <div>Hard cap (wei): <input type="text" class="js-cs-actions-setup-hard-cap" data-c-name="hardCap"/></div>
         <div>Rate: <input type="text" class="js-cs-actions-setup-rate" data-c-name="rate"/></div>
         <div>Over limit (wei): <input type="text" class="js-cs-actions-setup-over-limit" data-c-name="overLimit"/></div>
         <div>Min pay (wei): <input type="text" class="js-cs-actions-setup-min-pay" data-c-name="minPay"/></div>
+        <div>Max all profit (%): <input type="text" class="js-cs-actions-setup-max-all-profit" data-c-name="maxAllProfit"/></div>
         <div>
             Bonus 1 value (wei):
             <input type="text" class="js-cs-actions-setup-value" data-bonus="0" data-c-name="bonusesValue"/>
@@ -40,10 +57,6 @@
             <input type="text" class="js-cs-actions-setup-procent" data-bonus="0" data-c-name="bonusesProcent"/>
         </div>
         <div>
-            Bonus 1 freeze time:
-            <input type="text" class="js-cs-actions-setup-freeze-time" data-bonus="0" data-c-name="bonusesFreezeTime"/>
-        </div>
-        <div>
             Bonus 2 value (wei):
             <input type="text" class="js-cs-actions-setup-value" data-bonus="1" data-c-name="bonusesValue"/>
         </div>
@@ -51,9 +64,30 @@
             Bonus 2 procent:
             <input type="text" class="js-cs-actions-setup-procent" data-bonus="1" data-c-name="bonusesProcent"/>
         </div>
+
         <div>
-            Bonus 2 freeze time:
-            <input type="text" class="js-cs-actions-setup-freeze-time" data-bonus="1" data-c-name="bonusesFreezeTime"/>
+            Profit 1 duration (seconds):
+            <input type="text" class="js-cs-actions-setup-pduration" data-profit="0" data-c-name="profitsDuration"/>
+        </div>
+        <div>
+            Profit 1 procent:
+            <input type="text" class="js-cs-actions-setup-pprocent" data-profit="0" data-c-name="profitsProcent"/>
+        </div>
+        <div>
+            Profit 2 duration (seconds):
+            <input type="text" class="js-cs-actions-setup-pduration" data-profit="1" data-c-name="profitsDuration"/>
+        </div>
+        <div>
+            Profit 2 procent:
+            <input type="text" class="js-cs-actions-setup-pprocent" data-profit="1" data-c-name="profitsProcent"/>
+        </div>
+        <div>
+            Profit 3 duration (seconds):
+            <input type="text" class="js-cs-actions-setup-pduration" data-profit="2" data-c-name="profitsDuration"/>
+        </div>
+        <div>
+            Profit 3 procent:
+            <input type="text" class="js-cs-actions-setup-pprocent" data-profit="2" data-c-name="profitsProcent"/>
         </div>
         <button class="js-cs-actions-setup">Setup</button>
     </div>
@@ -64,11 +98,7 @@
             Start time: <input type="text" class="js-cs-actions-change-period-start-time" data-c-name="startTime"/>
         </div>
         <div>
-            End discount time:
-            <input type="text" class="js-cs-actions-change-period-end-discount-time" data-c-name="endDiscountTime"/>
-        </div>
-        <div>
-            End time: <input type="text" class="js-cs-actions-change-period-end-time" data-c-name="endTime"/>
+            Stop time: <input type="text" class="js-cs-actions-change-period-stop-time" data-c-name="stopTime"/>
         </div>
         <button class="js-cs-actions-change-period">Change period</button>
     </div>
@@ -92,6 +122,7 @@
             <input type="text" class="js-cs-actions-change-rate-over-limit" data-c-name="overLimit"/>
         </div>
         <div>Min pay (wei): <input type="text" class="js-cs-actions-change-rate-min-pay" data-c-name="minPay"/></div>
+        <div>Max all profit (%): <input type="text" class="js-cs-actions-setup-rate-max-all-profit" data-c-name="maxAllProfit"/></div>
         <button class="js-cs-actions-change-rate">Change rate</button>
     </div>
 
@@ -107,10 +138,6 @@
             <input type="text" class="js-cs-actions-set-bonuses-procent" data-bonus="0" data-c-name="bonusesProcent"/>
         </div>
         <div>
-            Bonus 1 freeze time:
-            <input type="text" class="js-cs-actions-set-bonuses-freeze-time" data-bonus="0" data-c-name="bonusesFreezeTime"/>
-        </div>
-        <div>
             Bonus 2 value (wei):
             <input type="text" class="js-cs-actions-set-bonuses-value" data-bonus="1" data-c-name="bonusesValue"/>
         </div>
@@ -118,11 +145,65 @@
             Bonus 2 procent:
             <input type="text" class="js-cs-actions-set-bonuses-procent" data-bonus="1" data-c-name="bonusesProcent"/>
         </div>
+
         <div>
-            Bonus 2 freeze time:
-            <input type="text" class="js-cs-actions-set-bonuses-freeze-time" data-bonus="1" data-c-name="bonusesFreezeTime"/>
+            Profit 1 duration (seconds):
+            <input type="text" class="js-cs-actions-set-bonuses-pduration" data-profit="0" data-c-name="profitsDuration"/>
+        </div>
+        <div>
+            Profit 1 procent:
+            <input type="text" class="js-cs-actions-set-bonuses-pprocent" data-profit="0" data-c-name="profitsProcent"/>
+        </div>
+        <div>
+            Profit 2 duration (seconds):
+            <input type="text" class="js-cs-actions-set-bonuses-pduration" data-profit="1" data-c-name="profitsDuration"/>
+        </div>
+        <div>
+            Profit 2 procent:
+            <input type="text" class="js-cs-actions-set-bonuses-pprocent" data-profit="1" data-c-name="profitsProcent"/>
+        </div>
+        <div>
+            Profit 3 duration (seconds):
+            <input type="text" class="js-cs-actions-set-bonuses-pduration" data-profit="2" data-c-name="profitsDuration"/>
+        </div>
+        <div>
+            Profit 3 procent:
+            <input type="text" class="js-cs-actions-set-bonuses-pprocent" data-profit="2" data-c-name="profitsProcent"/>
         </div>
         <button class="js-cs-actions-set-bonuses">Set bonuses</button>
+    </div>
+
+    <h4>Allocation periods</h4>
+    <div>
+        <div>
+            Allocation queue offset:
+            <input type="text" class="js-cs-actions-set-allocation-offset-value" />
+        </div>
+        <div>
+            Periodic allocation unlock start:
+            <input type="text" class="js-cs-actions-set-periodic-allocation-unlock-start-value"/>
+        </div>
+        <button class="js-cs-actions-set-allocation-periods">Set periods</button>
+    </div>
+    <h4>Allocation queue Unlock for</h4>
+    <div>
+        <div>
+            Owner:
+            <input type="text" class="js-cs-actions-set-allocation-queue-owner" />
+        </div>
+        <div>
+            Date:
+            <input type="text" class="js-cs-actions-set-allocation-queue-date"/>
+        </div>
+        <button class="js-cs-actions-set-allocation-queue-unlock">Unlock</button>
+    </div>
+    <h4>Periodic allocation Unlock for</h4>
+    <div>
+        <div>
+            Owner:
+            <input type="text" class="js-cs-actions-set-periodic-allocation-owner" />
+        </div>
+        <button class="js-cs-actions-set-periodic-allocation-unlock">Unlock</button>
     </div>
 </div>
 
@@ -131,11 +212,8 @@
     <h4>Token Sale Finalization</h4>
     <i>Possible to call only if round has ended or goal is not reached!</i><br><br>
     <div>
-        <button class="js-cs-actions-finalize-all">Finalize all</button>
         <button class="js-cs-actions-finalize">Finalize</button>
-        <button class="js-cs-actions-finalize-1">Finalize 1</button>
         <button class="js-cs-actions-finalize-2">Finalize 2</button>
-        <button class="js-cs-actions-finalize-3">Finalize 3</button>
         <button class="js-cs-actions-distruct-vault">Distruct vault</button>
     </div>
 
@@ -145,11 +223,11 @@
         <button class="js-cs-actions-initialize">Initialize</button>
     </div>
 
-    <h4>Fast token sale</h4>
-    <i>Possible to call only in round 1 and before initialization!</i><br><br>
+    <h4>Private sale</h4>
+    <i></i><br><br>
     <div>
         <div>Sum (pTokens * 10^18): <input type="text" class="js-cs-actions-fast-token-sale-sum"/></div>
-        <button class="js-cs-actions-fast-token-sale">Fast token sale</button>
+        <button class="js-cs-actions-fast-token-sale">Mint</button>
     </div>
 
     <h4>Pause actions</h4>
@@ -175,6 +253,21 @@
         <div>Non-ETH sum (value * 10^18): <input type="text" class="js-cs-actions-payments-in-other-currency-non-eth-sum"/>
         </div>
         <button class="js-cs-actions-payments-in-other-currency">Add payment</button>
+    </div>
+
+    <h4>Burn tokens</h4>
+    <div>
+        <div>Wallet: <input type="text" class="js-cs-actions-unburnable-wallet"/>
+        </div>
+        <div><button class="js-cs-actions-add-unburnable-wallet">Add unburnable wallet</button></div>
+
+        <br><i>Comma separated addresses and values</i><br>
+
+        <div>Beneficiary: <input type="text" class="js-cs-actions-burn-wallets"/>
+        </div>
+        <div>Values: <input type="text" class="js-cs-actions-burn-values"/>
+        </div>
+        <button class="js-cs-actions-mass-burn">Mass burn</button>
     </div>
 </div>
 
@@ -211,7 +304,7 @@
     <i>Possible to call only in active round 1 and 2!</i><br><br>
     <div>
         <div>Beneficiary: <input type="text" class="js-cs-actions-buy-tokens-benificiary"/></div>
-        <div>Value (wei): <input type="text" class="js-cs-actions-buy-tokens-value"/></div>
+        <div>Value (ETH): <input type="text" class="js-cs-actions-buy-tokens-value"/></div>
         <button class="js-cs-actions-buy-tokens">Buy tokens</button>
     </div>
 </div>

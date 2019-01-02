@@ -23,10 +23,8 @@
                 <p>Is initialized: <span class="js-cs-is-initialized">0</span></p>
                 <p>Is paused crowdsale: <span class="js-cs-is-paused-crowdsale">0</span></p>
                 <p>Overall pTokens: <span class="js-cs-overall">0</span></p>
-                <p>Start mint? <span class="js-cs-start-mint">0</span></p>
                 <p>Start time: <span class="js-cs-start-time">0</span></p>
-                <p>End discount time: <span class="js-cs-end-discount-time">0</span></p>
-                <p>End time: <span class="js-cs-end-time">0</span></p>
+                <p>Stop time: <span class="js-cs-stop-time">0</span></p>
                 <p>Rate: <span class="js-cs-rate">0</span></p>
                 <p>Soft cap (wei): <span class="js-cs-soft-cap">0</span></p>
                 <p>Hard cap (wei): <span class="js-cs-hard-cap">0</span></p>
@@ -34,12 +32,11 @@
             </td>
             <td>
                 <p>Min pay (wei): <span class="js-cs-min-pay">0</span></p>
+                <p>Max all profit (%): <span class="js-cs-max-all-profit">0</span></p>
                 <p>Wei raised (wei): <span class="js-cs-wei-raised">0</span></p>
                 <p>Wei total raised (wei): <span class="js-cs-wei-total-raised">0</span></p>
                 <p>Token reserved: <span class="js-cs-token-reserved">0</span></p>
-                <p>Bounty tokens ready to mint? <span class="js-cs-bounty">0</span></p>
-                <p>Team tokens ready to mint? <span class="js-cs-team">0</span></p>
-                <p>Company tokens ready to mint? <span class="js-cs-company">0</span></p>
+                <p>Permission to collect tokens to those who can pick them up? <span class="js-cs-charge-bonuses">0</span></p>
                 <p>Token sale type: <span class="js-cs-token-sale-type"></span></p>
                 <p>Has ended? <span class="js-cs-has-ended">0</span></p>
                 <p>Goal reached? <span class="js-cs-goal-reached">0</span></p>
@@ -54,10 +51,23 @@
                     <tr>
                         <th>Sum</th>
                         <th>Percent</th>
-                        <th>Freeze time</th>
                     </tr>
                     </thead>
                     <tbody class="js-cs-bonuses"></tbody>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2" class="profits">
+                Profits:
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Duration</th>
+                        <th>Percent</th>
+                    </tr>
+                    </thead>
+                    <tbody class="js-cs-profits"></tbody>
                 </table>
             </td>
         </tr>
@@ -95,6 +105,68 @@
         <tbody class="js-crowdsale-purchases"></tbody>
     </table>
     <div class="js-purchases"></div>
+</div>
+
+<div class="crowdsale-transfers">
+    <h2>Token transfers</h2>
+    <table>
+        <thead>
+        <tr>
+            <th>From</th>
+            <th>To</th>
+            <th>Amount</th>
+        </tr>
+        </thead>
+        <tbody class="js-token-transfers"></tbody>
+    </table>
+</div>
+<div class="balances">
+    <h2>Account balances</h2>
+    <table>
+        <thead>
+        <tr>
+            <th>Address</th>
+            <th>Description</th>
+            <th>pToken amount</th>
+            <th>eth balance</th>
+        </tr>
+        </thead>
+        <tbody class="js-token-balances"></tbody>
+    </table>
+</div>
+<div class="balances">
+    <h2>Periodic allocation</h2>
+    <p>Unlock start: <span class="js-periodic-allocation-unlock-start"></span></p>
+    <table>
+        <thead>
+        <tr>
+            <th>Address</th>
+            <th>Description</th>
+            <th>Proportion</th>
+            <th>Periods</th>
+            <th>Period length</th>
+        </tr>
+        </thead>
+        <tbody class="js-periodic-allocation"></tbody>
+    </table>
+</div>
+<div class="balances">
+    <h2>Allocation queue</h2>
+    <p>Total share: <span class="js-allocation-queue-total-share"></span></p>
+    <table>
+        <thead>
+        <tr>
+            <th>Address</th>
+            <th>Description</th>
+            <th>1 month</th>
+            <th>2 month</th>
+            <th>6 month</th>
+            <th>12 month</th>
+            <th>Sum</th>
+        </tr>
+        </thead>
+        <tbody class="js-allocation-queue"></tbody>
+    </table>
 </div>
 </body>
 </html>
