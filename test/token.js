@@ -36,20 +36,20 @@ contract('Token', function (accounts) {
 
     const token = await Token.deployed();
 
-    assert.equal(await token.balanceOf(accounts[10], {from: accounts[10]}), 0, '0 tokens wasn\'t on accounts[10]');
+    assert.equal(await token.balanceOf(accounts[13], {from: accounts[13]}), 0, '0 tokens wasn\'t on accounts[13]');
 
-    await token.mint(accounts[10], 1000);
+    await token.mint(accounts[13], 1000);
 
-    assert.equal(await token.balanceOf(accounts[10], {from: accounts[10]}), 1000, '1000 tokens wasn\'t on accounts[10] after mint');
+    assert.equal(await token.balanceOf(accounts[13], {from: accounts[13]}), 1000, '1000 tokens wasn\'t on accounts[13] after mint');
 
-    await expectThrow(token.burn(accounts[10], 500, {from: accounts[1]})); // Only owner can burn tokens
-    await token.burn(accounts[10], 500, {from: accounts[0]});
+    await expectThrow(token.burn(accounts[13], 500, {from: accounts[1]})); // Only owner can burn tokens
+    await token.burn(accounts[13], 500, {from: accounts[0]});
 
-    assert.equal(await token.balanceOf(accounts[10], {from: accounts[10]}), 500, '500 tokens wasn\'t on accounts[10] after burn');
+    assert.equal(await token.balanceOf(accounts[13], {from: accounts[13]}), 500, '500 tokens wasn\'t on accounts[13] after burn');
 
-    await token.burn(accounts[10], 500, {from: accounts[0]});
+    await token.burn(accounts[13], 500, {from: accounts[0]});
 
-    assert.equal(await token.balanceOf(accounts[10], {from: accounts[10]}), 0, '0 tokens wasn\'t on accounts[10] after burn');
+    assert.equal(await token.balanceOf(accounts[13], {from: accounts[13]}), 0, '0 tokens wasn\'t on accounts[13] after burn');
   });
 
   it('should not allow to burn tokens in unburnable wallets', async () => {
@@ -57,19 +57,19 @@ contract('Token', function (accounts) {
     const crowdsale = await Crowdsale.deployed();
     const token = await Token.at(await crowdsale.token());
 
-    assert.equal(await token.balanceOf(accounts[10], {from: accounts[10]}), 0, '0 tokens wasn\'t on accounts[10]');
+    assert.equal(await token.balanceOf(accounts[13], {from: accounts[13]}), 0, '0 tokens wasn\'t on accounts[13]');
 
-    await crowdsale.mint(accounts[10], 1500);
-    await crowdsale.burn(accounts[10], 500, {from: accounts[0]});
+    await crowdsale.mint(accounts[13], 1500);
+    await crowdsale.burn(accounts[13], 500, {from: accounts[0]});
 
-    assert.equal(await token.balanceOf(accounts[10], {from: accounts[10]}), 1000, '1000 tokens wasn\'t on accounts[10] after mint');
+    assert.equal(await token.balanceOf(accounts[13], {from: accounts[13]}), 1000, '1000 tokens wasn\'t on accounts[13] after mint');
 
-    await expectThrow(token.setUnburnableWallet(accounts[10], {from: accounts[1]})); // Only manager can set unburnable wallets
-    await token.setUnburnableWallet(accounts[10], {from: accounts[2]});
+    await expectThrow(token.setUnburnableWallet(accounts[13], {from: accounts[1]})); // Only manager can set unburnable wallets
+    await token.setUnburnableWallet(accounts[13], {from: accounts[2]});
 
-    await expectThrow(crowdsale.burn(accounts[10], 500, {from: accounts[0]}));
+    await expectThrow(crowdsale.burn(accounts[13], 500, {from: accounts[0]}));
 
-    assert.equal(await token.balanceOf(accounts[10], {from: accounts[10]}), 1000, '1000 tokens wasn\'t on accounts[10]');
+    assert.equal(await token.balanceOf(accounts[13], {from: accounts[13]}), 1000, '1000 tokens wasn\'t on accounts[13]');
   });
 
   it('should not allow manager to grant and deny users to set unburnable wallets', async () => {
@@ -77,25 +77,25 @@ contract('Token', function (accounts) {
     const crowdsale = await Crowdsale.deployed();
     const token = await Token.at(await crowdsale.token());
 
-    assert.equal(await token.balanceOf(accounts[11], {from: accounts[11]}), 0, '0 tokens wasn\'t on accounts[11]');
+    assert.equal(await token.balanceOf(accounts[14], {from: accounts[14]}), 0, '0 tokens wasn\'t on accounts[14]');
 
-    await crowdsale.mint(accounts[11], 1500);
-    await crowdsale.burn(accounts[11], 500, {from: accounts[0]});
+    await crowdsale.mint(accounts[14], 1500);
+    await crowdsale.burn(accounts[14], 500, {from: accounts[0]});
 
-    assert.equal(await token.balanceOf(accounts[11], {from: accounts[11]}), 1000, '1000 tokens wasn\'t on accounts[11] after mint');
+    assert.equal(await token.balanceOf(accounts[14], {from: accounts[14]}), 1000, '1000 tokens wasn\'t on accounts[14] after mint');
 
-    await expectThrow(token.setUnburnableWallet(accounts[11], {from: accounts[1]}));
-    await expectThrow(token.grantToSetUnburnableWallet(accounts[11], true, {from: accounts[1]}));
+    await expectThrow(token.setUnburnableWallet(accounts[14], {from: accounts[1]}));
+    await expectThrow(token.grantToSetUnburnableWallet(accounts[14], true, {from: accounts[1]}));
 
     await token.grantToSetUnburnableWallet(accounts[1], true, {from: accounts[2]});
-    await token.setUnburnableWallet(accounts[11], {from: accounts[1]});
+    await token.setUnburnableWallet(accounts[14], {from: accounts[1]});
 
     await token.grantToSetUnburnableWallet(accounts[1], false, {from: accounts[2]});
-    await expectThrow(token.setUnburnableWallet(accounts[11], {from: accounts[1]}));
+    await expectThrow(token.setUnburnableWallet(accounts[14], {from: accounts[1]}));
 
-    await expectThrow(crowdsale.burn(accounts[11], 500, {from: accounts[0]}));
+    await expectThrow(crowdsale.burn(accounts[14], 500, {from: accounts[0]}));
 
-    assert.equal(await token.balanceOf(accounts[11], {from: accounts[11]}), 1000, '1000 tokens wasn\'t on accounts[10]');
+    assert.equal(await token.balanceOf(accounts[14], {from: accounts[14]}), 1000, '1000 tokens wasn\'t on accounts[13]');
   });
 
   it('should not allow massburn in unburnable wallets', async () => {

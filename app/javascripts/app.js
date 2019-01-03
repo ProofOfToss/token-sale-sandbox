@@ -72,6 +72,10 @@ window.App = {
         $('.now-plus-6m').html(now + monthSeconds * 6);
         $('.now-plus-12m').html(now + yearSeconds);
 
+        $('.now-minus-1m').html(now - monthSeconds);
+        $('.now-minus-2m').html(now - monthSeconds * 2);
+        $('.now-minus-7m').html(now - monthSeconds * 7);
+
       }, 5000);
     });
   },

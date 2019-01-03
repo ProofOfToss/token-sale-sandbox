@@ -20,12 +20,15 @@ contract('Crowdsale', function(accounts) {
     assert.equal(await crowdsale.wallets(1), accounts[1], 'Invalid Accountant address');
     assert.equal(await crowdsale.wallets(2), accounts[2], 'Invalid Manager address');
     assert.equal(await crowdsale.wallets(3), accounts[3], 'Invalid Observer address');
-    assert.equal(await crowdsale.wallets(4), accounts[4], 'Invalid Bounty  address');
+    assert.equal(await crowdsale.wallets(4), accounts[4], 'Invalid Bounty address');
     assert.equal(await crowdsale.wallets(5), accounts[5], 'Invalid Advisers address');
     assert.equal(await crowdsale.wallets(6), accounts[6], 'Invalid Team address');
     assert.equal(await crowdsale.wallets(7), accounts[7], 'Invalid Founders address');
     assert.equal(await crowdsale.wallets(8), accounts[8], 'Invalid Fund address');
     assert.equal(await crowdsale.wallets(9), accounts[9], 'Invalid Fees address');
+    assert.equal(await crowdsale.wallets(10), accounts[10], 'Invalid Players and investors address');
+    assert.equal(await crowdsale.wallets(11), accounts[11], 'Invalid Airdrop address');
+    assert.equal(await crowdsale.wallets(12), accounts[12], 'Invalid Referrals address');
   });
 
   it('should add time and volume bonuses', async function() {
@@ -42,8 +45,8 @@ contract('Crowdsale', function(accounts) {
     }
 
     let balance = 0;
-    assert.equal(parseInt(await token.balanceOf(accounts[10])), 0, '0 tokens wasn\'t on accounts[10]');
-    assert.equal(parseInt(await token.freezedTokenOf(accounts[10])), 0, '0 freezed tokens wasn\'t on accounts[10]');
+    assert.equal(parseInt(await token.balanceOf(accounts[13])), 0, '0 tokens wasn\'t on accounts[13]');
+    assert.equal(parseInt(await token.freezedTokenOf(accounts[13])), 0, '0 freezed tokens wasn\'t on accounts[13]');
 
     // min pay: web3.toWei(71, 'finney')
     // value bonus 30%: web3.toWei(71, 'ether')
@@ -65,44 +68,46 @@ contract('Crowdsale', function(accounts) {
 
     // Time bonus 1 day
     balance += getTokens(amount) * TB1day;
-    await crowdsale.buyTokens(accounts[10], {from: accounts[10], value: amount});
+    await crowdsale.buyTokens(accounts[13], {from: accounts[13], value: amount});
 
-    assertBNEqual(await token.balanceOf(accounts[10]), balance, 'invalid purchase with 1 day time bonus');
+    assertBNEqual(await token.balanceOf(accounts[13]), balance, 'invalid purchase with 1 day time bonus');
 
     // Maximum of Time bonus 1 day and Volume bonus
     balance += getTokens(VBValue) * VBBonus;
-    await crowdsale.buyTokens(accounts[10], {from: accounts[10], value: VBValue});
+    await crowdsale.buyTokens(accounts[13], {from: accounts[13], value: VBValue});
 
-    assertBNEqual(await token.balanceOf(accounts[10]), balance, 'invalid purchase with 1 day time bonus and volume bonus');
+    assertBNEqual(await token.balanceOf(accounts[13]), balance, 'invalid purchase with 1 day time bonus and volume bonus');
 
     await crowdsale.setStartTime(now - 24 * 3600);
 
     // Time bonus 3 day
     balance += getTokens(amount) * TB3day;
-    await crowdsale.buyTokens(accounts[10], {from: accounts[10], value: amount});
-    assertBNEqual(await token.balanceOf(accounts[10]), balance, 'invalid purchase with 2 days time bonus');
+    await crowdsale.buyTokens(accounts[13], {from: accounts[13], value: amount});
+    assertBNEqual(await token.balanceOf(accounts[13]), balance, 'invalid purchase with 2 days time bonus');
 
     await crowdsale.setStartTime(now - 3 * 24 * 3600);
 
     // Time bonus 7 day
     balance += getTokens(amount) * TB7day;
-    await crowdsale.buyTokens(accounts[10], {from: accounts[10], value: amount});
-    assertBNEqual(await token.balanceOf(accounts[10]), balance, 'invalid purchase with 4 days time bonus');
+    await crowdsale.buyTokens(accounts[13], {from: accounts[13], value: amount});
+    assertBNEqual(await token.balanceOf(accounts[13]), balance, 'invalid purchase with 4 days time bonus');
 
     await crowdsale.setStartTime(now - 7 * 24 * 3600);
 
     // No bonus
     balance += getTokens(amount);
-    await crowdsale.buyTokens(accounts[10], {from: accounts[10], value: amount});
-    assertBNEqual(await token.balanceOf(accounts[10]), balance, 'invalid purchase without bonus');
+    await crowdsale.buyTokens(accounts[13], {from: accounts[13], value: amount});
+    assertBNEqual(await token.balanceOf(accounts[13]), balance, 'invalid purchase without bonus');
 
     // Volume bonus
     balance += getTokens(VBValue) * VBBonus;
-    await crowdsale.buyTokens(accounts[10], {from: accounts[10], value: VBValue});
-    assertBNEqual(await token.balanceOf(accounts[10]), balance, 'invalid purchase with volume bonus');
+    await crowdsale.buyTokens(accounts[13], {from: accounts[13], value: VBValue});
+    assertBNEqual(await token.balanceOf(accounts[13]), balance, 'invalid purchase with volume bonus');
 
-    assert.equal(parseInt(await token.freezedTokenOf(accounts[10])), 0, '0 freezed tokens wasn\'t on accounts[10]');
-  });it('should allow manager to manually stop crowdsale (success)', async () => {
+    assert.equal(parseInt(await token.freezedTokenOf(accounts[13])), 0, '0 freezed tokens wasn\'t on accounts[13]');
+  });
+
+  it('should allow manager to manually stop crowdsale (success)', async () => {
     const creator = await TestCreator.new();
     const crowdsale = await Crowdsale.new(creator.address);
     await crowdsale.privateMint(100500);
@@ -122,37 +127,38 @@ contract('Crowdsale', function(accounts) {
 
     await crowdsale.setStartTime(now - 7 * 24 * 3600); // Disable time bonus
 
-    const originalBalance = web3.eth.getBalance(accounts[10]);
+    const originalBalance = web3.eth.getBalance(accounts[13]);
     const feesOriginalBalance = web3.eth.getBalance(accounts[9]);
     const beneficiaryOriginalBalance = web3.eth.getBalance(accounts[0]);
     const spentEther = web3.toWei(1, 'ether');
     await crowdsale.setSoftCap(spentEther);
     const purchasedTokens = getTokens(spentEther);
 
-    await expectThrow(crowdsale.stop({from: accounts[10]}));
+    await expectThrow(crowdsale.stop({from: accounts[13]}));
 
-    await crowdsale.buyTokens(accounts[10], {from: accounts[10], value: spentEther});
+    await crowdsale.buyTokens(accounts[13], {from: accounts[13], value: spentEther});
 
-    assertBNEqual(await token.balanceOf(accounts[10]), purchasedTokens, 'invalid accounts[10] balance');
-    assertBNEqual(web3.eth.getBalance(accounts[10]), originalBalance - spentEther, 'invalid accounts[10] eth balance');
+    assertBNEqual(await token.balanceOf(accounts[13]), purchasedTokens, 'invalid accounts[13] balance');
+    assertBNEqual(web3.eth.getBalance(accounts[13]), originalBalance - spentEther, 'invalid accounts[13] eth balance');
 
     await crowdsale.stop({from: accounts[2]})
 
-    await expectThrow(crowdsale.buyTokens(accounts[10], {from: accounts[10], value: spentEther}));
+    await expectThrow(crowdsale.buyTokens(accounts[13], {from: accounts[13], value: spentEther}));
 
-    await expectThrow(crowdsale.finalize({from: accounts[10]})); // Crowdsale successed only manager can finalize
+    await expectThrow(crowdsale.finalize({from: accounts[13]})); // Crowdsale successed only manager can finalize
     await crowdsale.finalize({from: accounts[2]});
 
-    await expectThrow(crowdsale.claimRefund({from: accounts[10]}));
+    await expectThrow(crowdsale.claimRefund({from: accounts[13]}));
 
     const wallet = '0xd12cFD596279CDb76915827d5039936cc48e2B8D';
 
-    await expectThrow(token.transfer(wallet, 100500, {from: accounts[10]})); // Token is paused
+    await expectThrow(token.transfer(wallet, 100500, {from: accounts[13]})); // Token is paused
 
     await crowdsale.setStopTime(now - 60 * 24 * 60 * 60); // Allow users to unpause. Set stop time = now - USER_UNPAUSE_TOKEN_TIMEOUT
-    await crowdsale.tokenUnpause({from: accounts[10]}); // Crowdsale successed anybody can unpause
 
-    token.transfer(wallet, 100500, {from: accounts[10]});
+    await crowdsale.tokenUnpause({from: accounts[13]}); // Crowdsale successed anybody can unpause
+
+    token.transfer(wallet, 100500, {from: accounts[13]});
     assertBNEqual(await token.balanceOf(wallet), 100500, 'invalid wallet balance');
 
     assertBNEqual(web3.eth.getBalance(accounts[9]) - feesOriginalBalance, spentEther * 0.07, 'invalid Fees eth balance');
@@ -179,28 +185,28 @@ contract('Crowdsale', function(accounts) {
 
     await crowdsale.setStartTime(now - 7 * 24 * 3600); // Disable time bonus
 
-    const originalBalance = web3.eth.getBalance(accounts[10]);
+    const originalBalance = web3.eth.getBalance(accounts[13]);
     const feesOriginalBalance = web3.eth.getBalance(accounts[9]);
     const beneficiaryOriginalBalance = web3.eth.getBalance(accounts[0]);
     const spentEther = web3.toWei(1, 'ether');
     const purchasedTokens = getTokens(spentEther);
 
-    await expectThrow(crowdsale.stop({from: accounts[10]}));
+    await expectThrow(crowdsale.stop({from: accounts[13]}));
 
-    await crowdsale.buyTokens(accounts[10], {from: accounts[10], value: spentEther});
+    await crowdsale.buyTokens(accounts[13], {from: accounts[13], value: spentEther});
 
-    assertBNEqual(await token.balanceOf(accounts[10]), purchasedTokens, 'invalid accounts[10] balance');
-    assertBNEqual(web3.eth.getBalance(accounts[10]), originalBalance - spentEther, 'invalid accounts[10] eth balance');
+    assertBNEqual(await token.balanceOf(accounts[13]), purchasedTokens, 'invalid accounts[13] balance');
+    assertBNEqual(web3.eth.getBalance(accounts[13]), originalBalance - spentEther, 'invalid accounts[13] eth balance');
 
     await crowdsale.stop({from: accounts[2]})
 
-    await expectThrow(crowdsale.buyTokens(accounts[10], {from: accounts[10], value: spentEther}));
+    await expectThrow(crowdsale.buyTokens(accounts[13], {from: accounts[13], value: spentEther}));
 
-    await crowdsale.finalize({from: accounts[10]}); // Crowdsale failed anybody can finalize
+    await crowdsale.finalize({from: accounts[13]}); // Crowdsale failed anybody can finalize
 
-    await crowdsale.claimRefund({from: accounts[10]});
+    await crowdsale.claimRefund({from: accounts[13]});
 
-    assertBNEqual(web3.eth.getBalance(accounts[10]), originalBalance, 'invalid accounts[10] eth balance');
+    assertBNEqual(web3.eth.getBalance(accounts[13]), originalBalance, 'invalid accounts[13] eth balance');
 
     assertBNEqual(web3.eth.getBalance(accounts[9]), feesOriginalBalance, 'invalid Fees eth balance');
     assertBNEqual(web3.eth.getBalance(accounts[0]), beneficiaryOriginalBalance, 'invalid Beneficiary eth balance');
@@ -222,7 +228,7 @@ contract('Crowdsale', function(accounts) {
     await crowdsale.setHardCap(2 * spentEther);
     const purchasedTokens = getTokens(spentEther);
 
-    await expectThrow(crowdsale.privateMint(purchasedTokens, {from: accounts[10]})); // Only manager allowed to private mint
+    await expectThrow(crowdsale.privateMint(purchasedTokens, {from: accounts[13]})); // Only manager allowed to private mint
 
     await crowdsale.privateMint(purchasedTokens, {from: accounts[2]}); // Allow private mint before crowdsale start
 
@@ -245,6 +251,6 @@ contract('Crowdsale', function(accounts) {
 
     await expectThrow(crowdsale.privateMint(purchasedTokens, {from: accounts[2]}));  // Crowdsale ended
 
-    assertBNEqual(await token.balanceOf(accounts[1]), 3 * purchasedTokens, 'invalid accounts[10] balance');
+    assertBNEqual(await token.balanceOf(accounts[1]), 3 * purchasedTokens, 'invalid accounts[13] balance');
   });
 });

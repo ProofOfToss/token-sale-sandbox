@@ -25,6 +25,6 @@ contract TestAllocationQueue is AllocationQueue {
     }
 
     function groupDatesPublic(uint256 _date) public view returns (uint256) {
-        return super.groupDates(_date);
+        return groupDates(_date);
     }
 }

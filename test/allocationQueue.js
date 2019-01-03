@@ -82,15 +82,15 @@ contract('AllocationQueue', function(accounts) {
 
     await crowdsale.setStartTime(now - 7 * 24 * 3600); // Disable time bonus
 
-    assert.equal(parseInt(await token.balanceOf(accounts[10])), 0, '0 tokens wasn\'t on accounts[10]');
+    assert.equal(parseInt(await token.balanceOf(accounts[13])), 0, '0 tokens wasn\'t on accounts[13]');
 
-    await crowdsale.buyTokens(accounts[10], {from: accounts[10], value: spentEther / 2});
+    await crowdsale.buyTokens(accounts[13], {from: accounts[13], value: spentEther / 2});
 
     assertBNEqual(await crowdsale.ethWeiRaised(), spentEther, 'invalid Accountant balance');
     assertBNEqual(await token.balanceOf(accounts[1]), purchasedTokens / 2, 'invalid Accountant balance');
-    assertBNEqual(await token.balanceOf(accounts[10]), purchasedTokens / 2, 'invalid accounts[10] balance');
+    assertBNEqual(await token.balanceOf(accounts[13]), purchasedTokens / 2, 'invalid accounts[13] balance');
     assertBNEqual(await token.balanceOf(allocationQueue.address), totalTokens * 0.39, 'invalid allocationQueue balance');
-    assertBNEqual(parseInt(await token.freezedTokenOf(accounts[10])), 0, 'invalid accounts[10] freezed tokens');
+    assertBNEqual(parseInt(await token.freezedTokenOf(accounts[13])), 0, 'invalid accounts[13] freezed tokens');
     assertBNEqual(parseInt(await token.freezedTokenOf(allocationQueue.address)), 0, 'invalid allocationQueue freezed tokens');
 
     // 4% – tokens for Airdrop, freeze 2 month
