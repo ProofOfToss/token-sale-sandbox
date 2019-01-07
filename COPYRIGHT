@@ -1,0 +1,4 @@
+Authors: https://www.axiomadev.com/
+
+This project depends on Proof of Toss token sale smart-contracts, which are imported as git submodule.
+Please refer to https://github.com/ProofOfToss/token-sale-contracts/blob/master/COPYRIGHT for copyright on Proof of Toss token sale smart-contracts.
