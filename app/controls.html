@@ -100,6 +100,87 @@
         </div>
         <button class="js-cs-actions-setup">Setup</button>
     </div>
+    <h4>Change period</h4>
+    <i>Possible to call only before initialization and round start!</i><br><br>
+    <div>
+        <div>
+            Start time: <input type="text" class="js-cs-actions-change-period-start-time" data-c-name="startTime"/>
+        </div>
+        <div>
+            Stop time: <input type="text" class="js-cs-actions-change-period-stop-time" data-c-name="stopTime"/>
+        </div>
+        <button class="js-cs-actions-change-period">Change period</button>
+    </div>
+
+    <h4>Change targets</h4>
+    <i>Possible to call only before initialization and round start!</i><br><br>
+    <div>
+        <div>Soft cap (wei): <input type="text" class="js-cs-actions-change-targets-soft-cap" data-c-name="softCap"/>
+        </div>
+        <div>Hard cap (wei): <input type="text" class="js-cs-actions-change-targets-hard-cap" data-c-name="hardCap"/>
+        </div>
+        <button class="js-cs-actions-change-targets">Change targets</button>
+    </div>
+
+    <h4>Change rate</h4>
+    <i>Possible to call only before initialization and round start!</i><br><br>
+    <div>
+        <div>Rate (wei): <input type="text" class="js-cs-actions-change-rate-rate" data-c-name="rate"/></div>
+        <div>
+            Over limit (wei):
+            <input type="text" class="js-cs-actions-change-rate-over-limit" data-c-name="overLimit"/>
+        </div>
+        <div>Min pay (wei): <input type="text" class="js-cs-actions-change-rate-min-pay" data-c-name="minPay"/></div>
+        <div>Max all profit (%): <input type="text" class="js-cs-actions-setup-rate-max-all-profit" data-c-name="maxAllProfit"/></div>
+        <button class="js-cs-actions-change-rate">Change rate</button>
+    </div>
+
+    <h4>Set bonuses</h4>
+    <i>Possible to call only before initialization and round start!</i><br><br>
+    <div>
+        <div>
+            Bonus 1 value (wei):
+            <input type="text" class="js-cs-actions-set-bonuses-value" data-bonus="0" data-c-name="bonusesValue"/>
+        </div>
+        <div>
+            Bonus 1 procent:
+            <input type="text" class="js-cs-actions-set-bonuses-procent" data-bonus="0" data-c-name="bonusesProcent"/>
+        </div>
+        <div>
+            Bonus 2 value (wei):
+            <input type="text" class="js-cs-actions-set-bonuses-value" data-bonus="1" data-c-name="bonusesValue"/>
+        </div>
+        <div>
+            Bonus 2 procent:
+            <input type="text" class="js-cs-actions-set-bonuses-procent" data-bonus="1" data-c-name="bonusesProcent"/>
+        </div>
+
+        <div>
+            Profit 1 duration (seconds):
+            <input type="text" class="js-cs-actions-set-bonuses-pduration" data-profit="0" data-c-name="profitsDuration"/>
+        </div>
+        <div>
+            Profit 1 procent:
+            <input type="text" class="js-cs-actions-set-bonuses-pprocent" data-profit="0" data-c-name="profitsProcent"/>
+        </div>
+        <div>
+            Profit 2 duration (seconds):
+            <input type="text" class="js-cs-actions-set-bonuses-pduration" data-profit="1" data-c-name="profitsDuration"/>
+        </div>
+        <div>
+            Profit 2 procent:
+            <input type="text" class="js-cs-actions-set-bonuses-pprocent" data-profit="1" data-c-name="profitsProcent"/>
+        </div>
+        <div>
+            Profit 3 duration (seconds):
+            <input type="text" class="js-cs-actions-set-bonuses-pduration" data-profit="2" data-c-name="profitsDuration"/>
+        </div>
+        <div>
+            Profit 3 procent:
+            <input type="text" class="js-cs-actions-set-bonuses-pprocent" data-profit="2" data-c-name="profitsProcent"/>
+        </div>
+        <button class="js-cs-actions-set-bonuses">Set bonuses</button>
+    </div>
 
     <h4>Reset all wallets</h4>
     <div>
@@ -185,8 +266,8 @@
     <h4>Private sale</h4>
     <i></i><br><br>
     <div>
-        <div>Token count: <input type="text" class="js-cs-actions-first-mint-round0-count"/></div>
-        <button class="js-cs-actions-first-mint-round0-mint">Mint</button>
+        <div>Token count: <input type="text" class="js-cs-actions-fast-token-sale-sum"/></div>
+        <button class="js-cs-actions-fast-token-sale">Mint</button>
     </div>
 
     <h4>Pause actions</h4>

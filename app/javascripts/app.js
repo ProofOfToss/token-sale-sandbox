@@ -35,15 +35,9 @@ window.App = {
     PeriodicAllocation.setProvider(web3.currentProvider);
     AllocationQueue.setProvider(web3.currentProvider);
 
-    const crowdsale = await TossCrowdsale.deployed();
+    const crowdsale = await Crowdsale.deployed();
     const tokenAddress = await crowdsale.token();
     const allocationAddress = await crowdsale.allocation();
-
-    var allocation = PeriodicAllocation.at(await crowdsale.allocation());
-    var allocationQueue = AllocationQueue.at(await crowdsale.allocationQueue());
-
-    window.allocation = allocation;
-    window.allocationQueue = allocationQueue;
 
     console.log('CROWDSALE ADDRESS: ' + crowdsale.address);
 
@@ -178,7 +172,7 @@ window.App = {
     // create a new web3 objects, because the one which comes from MetaMask has problems with events listening
     customWeb3 = new Web3(web3.currentProvider);
 
-    const TossCrowdsale2 = contract(toss_crowdsale_artifacts);
+    const TossCrowdsale2 = contract(crowdsale_artifacts);
     TossCrowdsale2.setProvider(customWeb3.currentProvider);
 
     const crowdsale = await TossCrowdsale2.deployed();
@@ -187,7 +181,7 @@ window.App = {
     let toss = null;
 
     if (tokenDeployed) {
-      toss = await web3.eth.contract(TossToken.abi).at(tokenAddress);
+      toss = await web3.eth.contract(Token.abi).at(tokenAddress);
     }
 
     const events = [
@@ -266,8 +260,14 @@ window.App = {
 
 
   listenToCrowdsaleActions: async function () {
-    var crowdsale = await TossCrowdsale.deployed();
+    var crowdsale = await Crowdsale.deployed();
     var from = {from: account};
+
+      var allocation = PeriodicAllocation.at(await crowdsale.allocation());
+      var allocationQueue = AllocationQueue.at(await crowdsale.allocationQueue());
+
+      window.allocation = allocation;
+      window.allocationQueue = allocationQueue;
 
     $('.js-cs-actions-change-period').click(function () {
         var startTime = parseInt($('.js-cs-actions-change-period-start-time').val(), 10);
@@ -802,9 +802,9 @@ window.App = {
 
   listenToTokenActions: async function () {
     // Send TOSS
-    const crowdsale = await TossCrowdsale.deployed();
+    const crowdsale = await Crowdsale.deployed();
     const tokenAddress = await crowdsale.token();
-    const toss = await web3.eth.contract(TossToken.abi).at(tokenAddress);
+    const toss = await web3.eth.contract(Token.abi).at(tokenAddress);
     const from = {from: account};
 
     toss.paused(function (e, r) {
@@ -1005,12 +1005,11 @@ window.App = {
 
     // Gather info from blockchain
     var data = {
-      overall: await crowdsale.totalSaledToken(),
+        totalSaledToken: await crowdsale.totalSaledToken(),
       isFinalized: await crowdsale.isFinalized(),
       isInitialized: await crowdsale.isInitialized(),
       isPausedCrowdsale: await crowdsale.isPausedCrowdsale(),
       chargeBonuses: await crowdsale.chargeBonuses(),
-      canFirstMint: await crowdsale.canFirstMint(),
       startTime: await crowdsale.startTime(),
         stopTime: await crowdsale.stopTime(),
       rate: await crowdsale.rate(),
@@ -1060,6 +1059,7 @@ window.App = {
 
   showCrowdsaleInfoInForm: async function () {
     // Gather info from blockchain
+      var crowdsale = await Crowdsale.deployed();
     var data = await this.gatherDataFromCrowdsale();
 
     // Set actions input default values
@@ -1147,7 +1147,6 @@ window.App = {
     $('.js-cs-is-finalized').html(data.isFinalized ? 'Yes' : 'No');
     $('.js-cs-is-initialized').html(data.isInitialized ? 'Yes' : 'No');
     $('.js-cs-is-paused-crowdsale').html(data.isPausedCrowdsale ? 'Yes' : 'No');
-    $('.js-cs-can-first-mint').html(data.canFirstMint ? 'Yes' : 'No');
     $('.js-cs-charge-bonuses').html(data.chargeBonuses ? 'Yes' : 'No');
     $('.js-cs-start-time').html(this.getDateTime(data.startTime.toNumber()));
       $('.js-cs-stop-time').html(this.getDateTime(data.stopTime.toNumber()));
